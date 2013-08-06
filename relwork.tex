@@ -1,0 +1,26 @@
+\section{Related Work}
+\label{sec:related}
+
+Our works builds upon several areas of research, in particular the graphical representation of news articles, the identification and tracking of topics, time-based story and event evolution, multi document summarization, and information visualisation.
+
+\textbf{Graph representation of Articles.} Choudhary et al.\cite{choudhary@ecir2008} propose a novel method of organizing a news corpus into a directed graph, by mining and tracking the \emph{transformations} that the \emph{actors} in the corpus undergo. These transformations, defined for one or two actors, can be one of the following:
+\begin{itemize}
+  \item \textbf{Birth:} An actor appearing for the first time
+  \item \textbf{Cease:} An actor appearing for the last time
+  \item \textbf{Merge:} Two actors interacting for the first time
+  \item \textbf{Split:} Two actors interacting for the last time
+  \item \textbf{Continue:} An actor remaining popular in a period
+\end{itemize}
+After mining these transformations, they create a news graph with a node for every article, and edges to cover the transformations that happen within the actor set across articles appearing in time. 
+
+\textbf{Topic Detection and Tracking.} Topic Detection \& Tracking (TDT) is a well studied problem \cite{springerlink:10.1023/B:INRT.0000011210.12953.86, springerlink:10.1007, Franz:2001:USC:383952.384013}. In TDT, a topic is defined as a collection of important words by considering documents to be bags-of-words. In ``Topic detection'', one determines clusters of articles that discuss the same topic, while in ``Topic tracking'', one detects stories that discuss a previously known topic \cite{Allan:2002:TDT:772260}. 
+
+\textbf{Story Evolution.}  Kim et al.\cite{Kim:2011:TCU:1964750.1964765} propose a method for detecting and tracking latent topics that appear within news articles, and visualize how the news corpus evolves from one topic set to another using topic similarity metrics. Suba\v{s}i\'{c} et al.\cite{subasic-ida:2013} %CONFIRM THIS IS THE RIGHT REFERENCE
+ show how an event emerges, changes and disappears by dividing each event into several time stages and forming a network of co-occurence of terms based on frequency and time relevance. Nallapati et al.\cite
+{Nallapati:2004:ETW:1031171.1031258, Mei:2005:DET:1081870.1081895} present a system to discover subtopics within a news topic and construct a graph showing their inter-dependencies. These systems are best-suited for simple linear news stories and may not work well for complex stories. In an extension to their previous work \cite{shahaf@kdd2010}, which finds the most coherent chain of articles that cover the story connecting 2 input articles, Shahaf et al.\cite{shahaf@www2012} construct a roadmap of chains of stories, which may have many branches of smaller stories. 
+
+\textbf{Summarization.} Barzilay et al.\cite{Barzilay:2002:ISS:1622810.1622812} talk about multidocument News summarization to generate a coherent and comprehensive summary from an input sequence of articles.
+
+\textbf{Visualization.} Vydiswaran et al.\cite{MEET:MEET14504801078} design a system to explore news by querying for topics, time range and locations. However, they process articles per user query. In addition, there is no notion of tracking news evolution on a timeline.
+
+As far as we know, our work is the first attempt towards creating a rich structure out of the raw articles. Having such a structure, allows us to run efficient algorithms on the news article stream to mine and track the underlying news stories and to provide a personalised context to the story tailored to the user's query. Further, by visualizing these stories on a timeline, helps the user follow the progression of the story through the different actors and topics.

@@ -1,0 +1,17 @@
+Experimental Evaluation
+
+o Details of how users approached the use of Google News and our system.
+o Put Usability and Effectiveness (currently Section 5.2.3) as the first
+sub-section.
+o One table which summarizes *all* experiments.
+    - Experiment name, metric, no. of users
+o Difference between just clustering and clustering and/or context is not
+  clear.
+    - This needs to be clearly explained in the previous sections, with
+    examples.
+    - In the experiments section, what is the metric that shows the
+    difference between these two? One possibility is to show result sets of just
+    clustering and clustering/context and ask the user which they prefer.
+* Is the clustered set of articles a subset of clustering/context?
+Can we show that adding articles for context *does not* reduce precision.
+

@@ -1,0 +1,87 @@
+
+
+\documentclass{acm_proc_article-sp}
+
+\newcommand{\mr}[1]{{\it MR: {\small #1}}}
+\newcommand{\eat}[1]{}
+
+\begin{document}
+
+\title{How stories evolve: News graphs as a way to represent context and evolution of news stories}
+
+\numberofauthors{1} %  in this sample file, there are a *total*
+% of EIGHT authors. SIX appear on the 'first-page' (for formatting
+% reasons) and the remaining two appear in the \additionalauthors section.
+%
+\author{
+%
+% 1st. author
+%\alignauthor 
+%Rahul Goyal, Ravee Malla, Amitabha Bagchi, Sameep Mehta, Maya Ramanath\\
+%  \affaddr{Indian Institute of Technology}\\
+%  \affaddr{New Delhi, India}\\
+%  \email{\{rahulgoyal34, ravmalla\}@gmail.com, \{bagchi, ramanath\}@cse.iitd.ernet.in}
+% 2nd author
+%\alignauthor 
+%Author 2\\
+  %\affaddr{Research India}\\
+ % \affaddr{New Delhi, India}\\
+ % \email{author2@in.ibm.com}
+}
+
+%\date{25 March 2013}
+
+\maketitle
+\begin{abstract}
+A news browser opening a newspaper or loading a news website jumps
+into a story somewhere in the middle and is faced with the complex
+task of figuring out the story's history and context(s). This task is
+extremely difficult with current keyword search interfaces which
+simply provide a list of articles. The complexity of the task is
+compounded by the fact that different users are interest in different
+contexts of the story, and it is impossible, {\em a priori} to guess
+what a particular users interest may be. Our aim in this paper is to
+present a news-browsing tools that allows for the complex task of
+context creation, we call it {\em personalized flexible context
+  extraction}, by preprocessing and storing articles in a structures
+way that makes it easy for the user to explore different
+contexts. Building on the work of Choudhary et. al. (ECIR, 2008) we
+model the news corpus as a graph of interacting actors and topics,
+each node being a news story. This graph is used as the backend to our
+system, called ESTHETE.  Our approach involves spending computational
+resources on preprocessing rather than processing. The advantage of
+this approach is that the incremental computational expense in
+incorporating new articles as they are published in minimal. This
+approach marks a significant departure from much of the research on
+news browsing in the literature which usually treats the entire corpus
+as a semi-structured input when presented with individual queries. We
+present several examples where ESTHETE can be used to follow stories
+spanning many days or weeks. We also report on a detailed user
+evaluation which highlights the usefulness of our system.
+
+\end{abstract}
+
+%{\bf MR: Abstract can be made tighter}
+
+% A category with the (minimum) three required fields
+\category{H.4}{Information Systems Applications}{Miscellaneous}
+%A category including the fourth, optional field follows...
+%\category{D.2.8}{Software Engineering}[performance measures]
+
+\terms{News Corpus Visualization, Flexible Personalized Context-rich News graph, News Summarization, System for News browsing, Interface Design}
+
+%\keywords{ACM proceedings, \LaTeX, text tagging} % NOT required for Proceedings
+
+\input{intro}
+\input{relwork}
+\input{newsgraph}
+\input{system}
+\input{expts}
+%\input{ack}
+\input{conclusion}
+
+\bibliographystyle{abbrv}
+\bibliography{news}  % news.bib is the name of the Bibliography in this case
+
+
+\end{document}

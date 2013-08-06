@@ -1,0 +1,9 @@
+# temporary latex files
+*.log
+*.aux
+*.dvi
+*.blg
+*.bbl
+
+# temporary vim files
+*.swp
