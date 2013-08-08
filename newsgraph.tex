@@ -77,7 +77,7 @@ So, we compute context as
 cont_{a}(b) = \frac{\sum_{\lambda \in E(b)}{\Omega(\lambda, \tau)*ContinueScore(\lambda, a)^{k}}}{|E(b) - E(a)|}
 \end{equation}
 where $k \in [-0.5, 0.5]$ is a user-input parameter which influences which of the 2 kinds of context is more prominent. A higher $k$ prefers context having more information
-around the same actors as those of our article of interest.
+around the same actors as those of our article of interest. For our experiments, we have kept the value of $k$ as 0.
 
 \subsubsection*{Edge weights}
 \cite{choudhary@ecir2008} defined the edge weight $r:V \times V \rightarrow [0,1]$ as:
