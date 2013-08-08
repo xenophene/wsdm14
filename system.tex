@@ -91,17 +91,20 @@ al.\cite{choudhary@ecir2008} which formalizes the notion of presenting
 news articles as a directed graph.  Their algorithm can be extended to
 augment new articles on to a pre-built graph since it considers
 articles sequentially.  The following sequence of update steps are to
-be followed on augmenting a new article $a_t$ published at $t$, into
+be followed on augmenting a new article $a_\tau$ published at $\tau$, into
 the graph structure.
-\begin{enumerate}
-  \item Tag $a_t$ with relevant actors and topics
-  \item Find all articles $A = a_\tau$ s.t. $\tau+F \leq t$.
-  \item For the articles in the set $A$, mine all additional transformations that emerge
-  \item Recompute the min-weight edge-covering locally in the subgraphs containing articles from $A$
-  \item For the new article $a_t$, repeat the steps required for adding a new article into the graph
-  \item Re-cluster the graph locally to determine to assign a cluster to the new node
-\end{enumerate}
-By taking the recommended values of the parameters, we were able to generate a news graph on 1000 nodes in around 4 minutes on a Dell Intel Centrino machine.
+\begin{algorithmic}
+  \State \textbf{\underline{AugmentGraphWithNewArticles}}
+  \State \algorithmicrequire{Article $a_\tau$}
+  \State Preprocess $a_\tau$ to mine relevant actors and topics
+  \ForAll{article $a_t$ st. $t \geq \tau - P$}
+    \State Mine and score all transformations between the articles $a_\tau$ and $a_t$
+  \EndFor
+  \State Find an edge-covering of the new transformations
+  \State Assign the node $a_\tau$ to the cluster which has the maximum total edge-weight with it
+\end{algorithmic}
+
+By taking the recommended values of the parameters($F=50$ days, $P=50$ days), we were able to generate a news graph on 1000 nodes in around 4 minutes on a Dell Intel Centrino machine.
 Adding newer articles to this graph was significantly cheaper, taking only around 10 seconds depending on the article size, etc.
 Moreover, it only looks at articles within a time window, and hence different parts of the graph can be generated in parallel.
 
@@ -130,6 +133,7 @@ To make it easier for the user to understand an event, we summarize the articles
 Due to richness of the news graph, the neighbourhood of the story (subgraphs of the base news graph) being currently visualized, serves to add
 useful context. Moreover, different parts of the neighbourhood model different transformations and hence, following
 different neighbours amounts to adding a more unique kind of context, which gives a unique interpretation of the overall story. 
+For this, we apply the \emph{GetNeighbourhood} algorithm mentioned in Section~\ref{sec:newsgraph}.
 \subsection {Frontend interface}
 Our interface is built on HTML using Javascript and PHP on the server-side, using TimelineJS\footnote{http://timeline.verite.co/} and Google Visualization API\footnote{http://developers.google.com/chart/interactive/docs/reference} libraries.
 Figure~\ref{fig:complete-tool-screenshot} shows a screenshot of our webtool. The interface
