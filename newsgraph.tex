@@ -23,7 +23,7 @@ be fully understood and assessed.'' But the term ``circumstances'' is
 vague and does not help us. So, instead, viewing the news corpus as a
 time indexed set, we can think of the following definition: 
 \begin{quote}
-Given a news article or articles {\em context} is that set of stories
+Given a news article or articles (from here on, referred to as our result set), {\em context} is that set of stories
 preceding, co-occuring or following that article or articles which
 enhance our understanding of the events or ideas described in that
 article or articles.
@@ -40,58 +40,80 @@ mentioned $X$). These articles serve as context. Hence, one way to think of cont
 are \emph{articles which are coherent with articles containing $X$ and have still more information to provide.}
 
 Given this intuition, we now propose a natural algorithm to determine useful context for a particular part of
-the news graph in consideration. We first define the notion of Continue strength $\Omega$ of an actor at some time.
-Let $\Lambda$ be the set of all actors, $T$ the time index set,
-and $\Omega : \Lambda \times T \rightarrow [0,1]$ gives an actor's continue strength at some time. This score is
-aggregated over all the articles featuring this actor.
-\begin{equation}
-\Omega(\lambda, \tau) = \frac{\sum_{a \in A([\tau - P, \tau + F])}{ContinueScore(\lambda, a)}}{|\{a  | a \in A([\tau - P, \tau + F])\}|}
-\end{equation}
-Here, $ContinueScore(\lambda, a)$ is the continue score (as defined in \cite{choudhary@ecir2008}) of an actor $\lambda$ occurring in article $a$ published around the current time point $\tau$. This score is
-normalized between 0 to 1. $P$ and $F$ are past and future time windows that we keep at 50 days each, and $A([\tau - P, \tau + F])$ are all the articles in this time window.
+the news graph in consideration. Say a user, on a certain filter query, is presented with an article $a$. We want to identify articles
+conntected to $a$ via a path in the graph, which would be helpful to the user to understand the story and the bigger picture.
 
+We first define the notion of Continue strength $\Omega$ of an actor at some time, which captures an actor's popularity in at that time.
+Let $\Lambda$ be the set of all actors, $T$ the time index set, then $\Omega : \Lambda \times T \rightarrow [0,1]$. This score is aggregated over all the articles featuring this actor.
+\begin{equation}
+\Omega(\lambda, \tau) = \frac{\sum_{a \in A([\tau - P, \tau + F])}{ContinueScore(\lambda, a, \tau)}}{|A([\tau - P, \tau + F])|}
+\end{equation}
+Here, $ContinueScore(\lambda, a, \tau)$ is the continue score (as defined in \cite{choudhary@ecir2008}) of an actor $\lambda$ occurring in article $a$ published around the current time point $\tau$. 
+\begin{equation}
+ContinueScore(\lambda, a, \tau) = \frac{\sum_{a \in A([\tau - P, \tau + F])}\mathbb{1}(\lambda \in a)}{|A([\tau - P, \tau + F])|}
+\end{equation}
+This score is normalized between 0 to 1. $P$ and $F$ are past and future time windows that we keep at 50 days each, and $A([\tau - P, \tau + F])$ are all the articles in this time window.
+
+Now, we define the following 3 metrics to help us decide whether article $b$ should be served to the user alongside article $a$.
+\begin{enumerate}
+\item $coh_a(b)$: Coherence of article $b$ with article $a$
+\item $cont_a(b)$: Context added by $b$ to $a$ 
+\item $r(a, b)$: Weight of the edge joining node $a$ and $b$.
+\end{enumerate}
+
+\subsubsection*{Coherence}
 Given an article $a$, we define $coh_{a}(b)$ as the \emph{coherence} between $a$ and some another article $b$. Intuitively, coherence captures the continuity of story when the two articles are read in succession.
-Clearly, coherence between 2 articles depends on the amount of their actor/topic overlap. Moreover, common actors with strong continue scores contribute less to coherence. So, we quantify coherence as
+Clearly, coherence between 2 articles depends on the amount of their actor/topic overlap. Moreover, common actors with strong continue scores should contribute less to coherence. This is because a strong continue score reflects the strong presence (lower importance) of the actor in articles in that particular time window. So, we quantify coherence as
 \begin{equation}
 coh_{a}(b) = \frac{\sum_{\lambda \in E(a) \cap E(b)}{\Omega(\lambda, \tau)^{-1}}}{|E(a) \cup E(b)|}
 \end{equation}
 where $E(a)$ is the set of actors occurring in article $a$ and $\tau$ is the time at which article $a$ is published. 
 
-Along the same lines, we define $cont_{a}(b)$ as the \emph{context} given by article $b$ to $a$. There are primarily two different kinds of context: a) Context of different actors/topics and how they lead
-to the story in A and b) Context of the same actors/topics in a slightly different setting. Context added by article $b$ can be quantified by the degree of ``new information'' added by $b$. So, we evaluate
-context as
+\subsubsection*{Context}
+Along the same lines, we define $cont_{a}(b)$ as the \emph{context} given by an article $b$ to $a$. There are two different kinds of context that a user may be interested in: 1) Context provided by different actors/topics and how they relate
+to the story in $a$. For instance, for the Delhi gang rape story, articles related to the rape incident that happened in Kolkata and controversy surrounding it provide this type of context. 2) Context of the same actors/topics in a slightly different setting. For instance, for the October 2012 petrol price hike story, articles related to the price hike from May 2012 provide this type of context. Context added by an article $b$ can be quantified by the degree of ``new information'' added by $b$.
+So, we compute context as
 \begin{equation}
 cont_{a}(b) = \frac{\sum_{\lambda \in E(b)}{\Omega(\lambda, \tau)*ContinueScore(\lambda, a)^{k}}}{|E(b) - E(a)|}
 \end{equation}
 where $k \in [-0.5, 0.5]$ is a user-input parameter which influences which of the 2 kinds of context is more prominent. A higher $k$ prefers context having more information
 around the same actors as those of our article of interest.
 
-A context-giving article is only useful as long as it is coherent with the original article(s).
-Hence, we have to combine these 2 metrics. Before this, we normalize both these metrics to 0 to 1.
-Finally, we apply the following algorithm to get the ``most useful'' neighbourhood of a result set of article nodes.
+\subsubsection*{Edge weights}
+\cite{choudhary@ecir2008} defined the edge weight $r:V \times V \rightarrow [0,1]$ as:
+\begin{equation}
+r(a, b) = sim(a,b) * Jacc(E(a), E(b)) * e^{-\alpha(\tau_a - \tau_b)}
+\end{equation}
+Here, $sim$ is cosine similarity between articles represented as vectors in the TfIdf space, $Jacc$ is the jaccard similarity between
+the entity sets of articles $a$ and $b$, and the final term is to factor in the time elapsed between their publishing dates ($\tau_a$ \& $\tau_b$).
+
+Next, we normalize these metrics between 0 to 1 by dividing with the maximum score that is observed in the window defined by $(\tau - P, \tau + F)$. This
+step is needed so we can compare these scores across different news stories. Our cumulative score is the product of these metrics.
+
+Finally, we apply the following algorithm to get the ``most useful'' neighbourhood of the articles that are the result of user's filter query. This algorithm is a walk on the news graph starting from every article $a$, 
+going as far as the cumulative score does not drop below a threshold $\theta$.
 
 \begin{algorithmic}
-  \State \textbf{procudure GetNeighbourhood:}
+  \State \textbf{\underline{GetNeighbourhood}}
   \State \algorithmicrequire{Node $n$, Current Weight $w$, Threshold $\theta$}
   \State \algorithmicensure{Neighbourhood $N$}
     \If {$w < \theta$}
-      \State return
+      \State return \{\}
     \EndIf
-    \ForAll{node $v \in E(n)$}
-      \If {! visited($v$)} 
+    \State $N = N\cup\{n\}$
+    \ForAll{node $v \in EdgeSet(n)$}
+      \If {visited($v$) == False} 
         \State visited($v$) = True
-        \State $w_1 = coh_{n}(v)$
-        \State $w_2 = cont_{n}(v)$
-        \State $w_3 = edge_weight_{(n,v)}$
-        \State GetNeighbourhood($n, w_1 * w_2 * w_3, \theta$)
+        \State $w_1 \leftarrow coh_{n}(v)$
+        \State $w_2 \leftarrow cont_{n}(v)$
+        \State $w_3 \leftarrow r(n,v)$
+        \State $w_{eff} \leftarrow w_1 * w_2 * w_3 * w$
+        \State GetNeighbourhood($v, w_{eff}, \theta$)
       \EndIf
     \EndFor
 \end{algorithmic}
 
-Through this algorithm, we look are assured of a good context coverage while keeping the coherence high.
-An important point to note here is that all of these scores need only by computed once and stored, and not computed for every user query. 
-
-We now give some examples of context in the news graph.
+Here, $EdgeSet$ returns all of a node's neighbours that are not covered in the result set. We now give some examples of context in the news graph.
 \begin{figure}
 \caption{Robert Vadra corruption story and its contexts}
 \includegraphics[scale=0.36]{figures/graph-vadra.pdf}

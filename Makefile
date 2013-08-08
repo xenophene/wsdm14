@@ -5,7 +5,7 @@ all: news_paper.tex intro.tex
 	pdflatex news_paper.tex
 
 clean:
-	rm *.dvi
 	rm *.log
 	rm *.blg
 	rm *.bbl
+	rm *.aux

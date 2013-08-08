@@ -23,7 +23,7 @@ We conducted several user studies to evaluate ESTHETE, which is a system compose
 
 
 \subsection{Setup}
-Our news corpus consists of articles published by ``The Hindu'', a popular Indian newspaper. We choose three groups of articles corresponding to ``rape'', ``corruption'' and ``petrol price''. We fired each of these keywords into the website's search form and downloaded all articles that were returned. Therefore, we had three article groups corresponding to the three keywords. The total no. of articles is 10,121, published between 2010-2013. Each group had specific \emph{subsets} of articles corresponding to recent stories in the news. The first group of articles contained, in addition to articles about rape cases in various parts of India and abroad, articles about a gang-rape of a woman on a bus, which led to several weeks of protests in Delhi. Similarly, the second group of articles contained a ``sub-story'' about a very high-profile anti-corruption protests in Delhi, which then morphed into a political story about accusations of corruption against the son-in-law (Robert Vadra) of a powerful politician. The third group of articles contained a sub-story about petrol prices in the year 2012 which lead to political unrest. %%MR: I am not very familiar with this story, please check.
+Our news corpus consists of articles published by ``The Hindu'', a popular Indian newspaper. We choose three groups of articles corresponding to ``rape'', ``corruption'' and ``petrol price''. We fired each of these keywords into the website's search form and downloaded all articles that were returned. Therefore, we had three article groups corresponding to the three keywords. The total no. of articles is 10,121, published between 2010-2013. Each group had specific \emph{subsets} of articles corresponding to recent stories in the news. The first group of articles contained, in addition to articles about rape cases in various parts of India and abroad, articles about a gang-rape of a woman on a bus, which led to several weeks of protests in Delhi. Similarly, the second group of articles contained a ``sub-story'' about a very high-profile anti-corruption protest in Delhi, which then morphed into a political story about accusations of corruption against the son-in-law (Robert Vadra) of a powerful politician. The third group of articles contained a sub-story about petrol prices in the year 2012 which lead to political unrest. %%MR: I am not very familiar with this story, please check.
 
 Each article group was then organised as a news graph using the techniques explained in Section \ref{sec:graph-desc}  %we need to mention this 
 and the following three sub stories (described in the previous paragraph), were used for experimentation i) the gang-rape incident in Delhi (S1), ii) corruption stories related to Robert Vadra (S2), and, iii) petrol price (S3).
@@ -40,12 +40,12 @@ The three user studies made use of the following setup: an article group, in its
 \begin{center}
 \small
 %\hline
-\begin{tabular}{|p{.75cm}|p{.75cm}|p{.75cm}|p{.75cm}|p{.75cm}|p{.75cm}|p{.75cm}|p{.75cm}|}
+\begin{tabular}{|p{.63cm}|p{.60cm}|p{1.05cm}|p{.75cm}|p{1.0cm}|p{.75cm}|p{1.0cm}|p{.75cm}|}
 \hline
-\multirow{2}{*}{{\bf Story}} & \multirow{2}{*}{{\bf No. of users}} & \multicolumn{2}{c}{{\bf Ease of use}} & \multicolumn{2}{c}{{\bf New Information}} & \multicolumn{2}{c}{{\bf Big Picture}}\\ \cline{3-8}
-& & ESTHETE & Google News & ESTHETE & Google News & ESTHETE & Google News \\
+\multirow{2}{*}{{\bf Story}} & \multirow{2}{*}{\parbox{.75cm}{\centering{ \bf No. of users}}} & \multicolumn{2}{p{1.75cm}}{\centering{\bf Ease of use}} & \multicolumn{2}{p{1.75cm}}{\centering{\bf New Information}} & \multicolumn{2}{p{1.75cm}}{\centering{\bf Big Picture}}\\ \cline{3-8}
+& & {\raggedleft{Esthete}} & {\raggedleft{Google News}} &{\raggedleft{ Esthete}} & {\raggedleft{Google News}} & {\raggedleft{Esthete}} & {\raggedleft{Google News}} \\
 \hline
-S1 & 22 & 3.765 & 4.25 & 4.25 & 3.4 & 4.3 & 3.66\\
+S1 & 22 & 3.76 & 4.25 & 4.25 & 3.4 & 4.3 & 3.66\\
 S2 & 12 & 3.83 & 4.18 & 4.29 & 3.5 & 4.39 & 3.71 \\
 S3 & 6 & 3.75 & 4.33 & 4.4 & 3.5 & 4.4 & 3.66\\
 \hline
@@ -56,7 +56,7 @@ S3 & 6 & 3.75 & 4.33 & 4.4 & 3.5 & 4.4 & 3.66\\
 \end{table}
 
 \normalsize
-In order to evaluate the usability of ESTHETE, we asked 40 users to pick a story of their choice (among S1, S2 and S3) and to study that story by interacting with ESTHETE and Google News, in a random order, for 15 minutes respectively. After the users had interacted with both the systems, we asked users the following questions:
+In order to evaluate the usability of ESTHETE, we asked 40 users to pick a story of their choice (among S1, S2 and S3) and to study that story by interacting with ESTHETE and Google News, in any order, for 15 minutes respectively. After the users had interacted with both the systems, we asked users the following questions:
 
 \begin{itemize}
 	\item {\bf (Q1) Ease of use:} On a scale of 1 to 5, how would you rate both the systems on their ease of use (with 5 corresponding to ``very easy'')?
@@ -69,7 +69,7 @@ Clearly, the users found our system to be more effective than Google News in gai
 
 
 %%MR: Instead of using ``tool'', use ``system''
-Finally, we compared the effectiveness of our system, to help users understand a story in depth, with Google News. We asked 18 users to use either our system or Google News in order to understand any of the three stories listed above. The users had to pick one story of their interest and were allowed to interact with their choosen system for a session lasting 25 minutes. The user's task was to learn as much as they can about their choosen story using a system. Then, once they had completed their interaction with their choosen system (ESTHETE or Google News), they were asked to answer a series of very specific questions related to the story they studied. For example, for the story S2 (Corruption Story), we had questions such as \emph{Do you have information to write a summary of the interactions between Arvind Kejriwal and Robert Vadra?} and \emph{Do you have information to write a summary of the news of Robert Vadra's land dealings in Haryana?}. For these questions, the users had to answer a Yes or a No based on their perception of how easy or difficult they feel it is to answer these questions using the system they just used. The users replied Yes if they felt that they could answer the question using the system they just used and vice versa.
+ We also compared the effectiveness of our system, to help users understand a story in depth, with Google News. We asked 18 users to use either our system or Google News in order to understand any of the three stories listed above. The users had to pick one story of their interest and were allowed to interact with their choosen system for a session lasting 25 minutes. The user's task was to learn as much as they can about their choosen story using a system. Then, once they had completed their interaction with their choosen system (ESTHETE or Google News), they were asked to answer a series of very specific questions related to the story they studied. For example, for the story S2 (Corruption Story), we had questions such as \emph{Do you have information to write a summary of the interactions between Arvind Kejriwal and Robert Vadra?} and \emph{Do you have information to write a summary of the news of Robert Vadra's land dealings in Haryana?}. For these questions, the users had to answer a Yes or a No based on their perception of how easy or difficult they feel it is to answer these questions using the system they just used. The users replied Yes if they felt that they could answer the question using the system they just used and vice versa.
 
 \begin{table}
 \small
@@ -113,7 +113,7 @@ S3 & 8 & 2.1 & 0.88\\
 
 \normalsize
 
-\paragraph*{Description} Users who had intimate knowledge of our three stories were shown the news graph for the entire timeline and allowed to filter these stories using whatever keywords they felt were appropriate from the list of entities and topics extracted by our system. For example, if they filtered on ``Robert Vadra'' (story S2), they would retain articles which not only contained ``Robert Vadra'', but also articles which had a strong connection to him in relation to the corruption allegations against him. The users than judged the relevance of each of these filtered articles on a 2-point scale (either relevant or not relevant). On average, for each story, users used 2-4 filters (that is, they judged the relevance for 2-4 subsets of articles within the larger timeline).
+\paragraph*{Description} In order to measure the precision of the system, users who had intimate knowledge of the three stories were shown the news graph for the entire timeline and allowed to filter these stories using whatever keywords they felt were appropriate from the list of entities and topics extracted by our system. For example, if they filtered on ``Robert Vadra'' (story S2), they would retain articles which not only contained ``Robert Vadra'', but also articles which had a strong connection to him in relation to the corruption allegations against him. The users than judged the relevance of each of these filtered articles on a 2-point scale (either relevant or not relevant). On average, for each story, users used 2-4 filters (that is, they judged the relevance for 2-4 subsets of articles within the larger timeline).
 
 \paragraph*{Results} The results of this experiment are tabulated in Table \ref{tab:prec}. The precision values are in the range 88\%-92\%, indicating that our representation framework is very effective in identifying different contexts.
 
@@ -155,7 +155,7 @@ S3 & 7 & 100\% & 0\% & 0\%\\
 
 \normalsize
 
-\paragraph*{Description} In order to determine whether news graphs compare against other ways of representing news corpora, we designed the following two baselines, both of which also made use of our timeline interface. Our first baseline (B1) simply presents \emph{all} articles (corresponding to the article groups mentioned above) on the timeline according to date of publication. For our second baseline (B2), we clustered each article group using k-means clustering, and then presented these clusters on our timeline. Therefore, visually, all three techniques looked the same. Three timelines corresponding to the three techniques were then simultaneously presented to the user and the user was asked to pick the one that they preferred in terms of understanding the various stories.
+\paragraph*{Description} In order to determine how news graphs compare against other ways of representing news corpora, we designed the following two baselines, both of which also made use of our timeline interface. Our first baseline (B1) simply presents \emph{all} articles (corresponding to the article groups mentioned above) on the timeline according to date of publication. For our second baseline (B2), we clustered each article group using k-means clustering, and then presented these clusters on our timeline. Therefore, visually, all three techniques looked the same. Three timelines corresponding to the three techniques were then simultaneously presented to the user and the user was asked to pick the one that they preferred in terms of understanding the various stories.
 
  %Clearly, our representation was preferred. %%MR: Note that we are talking about ``our clustering'' vs. ``k-means''. Make sure that this point is brought out in the text previously -- that news graph representation is a means of clustering. Otherwise these lines have no meaning.
 \paragraph*{Results} The results of this experiment are tabulated in Table \ref{tab:graph}. For all 3 article groups, our representation is preferred over the other two baselines. This implies that not only is the quality of the clusters formed by our technique better than k-means, but also that the context we provide to the users is actually found to be beneficial. For the story $S2$, $B2$ was preferred by 1 user because of the time-localised characteristic of the story $S2$, due to which that user couldn't benefit from the context added by our system.

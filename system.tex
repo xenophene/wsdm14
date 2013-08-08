@@ -28,7 +28,7 @@ be ``CORRUPTION AND ROBERT VADRA AND HARYANA'' which yields all stories around t
 (an Indian businessman) in Haryana (a state in India).
 \subsubsection{Faceted Searchability}
 Our system is a guided environment where a user is presented with popular actors, topics, events, time periods, etc automatically from the 
-news corpus, which guide her search to discover and explore more popular stories first. These also serve to label different stories, guide the
+news corpus, which guide her search to discover and explore more popular stories first. These also serve to label different stories and guide the
 user towards a more refined query around specific substories. Figure~\ref{fig:faceted-search} shows a snapshot of this feature.
 \begin{figure}[ht]
 \begin{center}
@@ -51,7 +51,7 @@ should be left to the user as a preference.
 \subsubsection{No Redundancy in the News stories}
 News articles around a single story tend to summarize past events, so as to be give some 
 context to the reader following this story. However, a browsing system should remove such redundancy, and summarize various facets of the story
-that are developed in the sequence of articles, so as event appears once at the time of first reporting
+that are developed in the sequence of articles, so that event appears once at the time of first reporting
 \subsection{Block System Design}
 \label{sec:block}
 
@@ -61,7 +61,7 @@ representation of the article set is rich enough to answer different kinds of us
 Figure~\ref{fig:block-system-design} shows our block system design. It can be divided into
 two major components - Offline and Online. The offline component handles incoming news articles, and augments them into our underlying graph data structure representation stored
 in the database. The online component interfaces with the user, and based on the user's query, identifies the parts of the graph to visualize and 
-shows the relevant stories. To further save, we need only save the structure with pointers to web URL of the article to be queried only while presenting to the user. We will now briefly describe each aspect of our system.
+shows the relevant stories. To further optimize, we need to only save the structure with pointers to web URL of the articles and query it only while presenting to the user. We will now briefly describe each aspect of our system.
 \subsection{Preprocessing Steps}
 \subsubsection*{News Corpus}
 Our news corpus is a subset of articles from the Indian national daily {\em The Hindu}\footnote{http://thehindu.com}, across a variety of broad categories like Crime, Economy, Government, etc. 
@@ -105,7 +105,7 @@ By taking the recommended values of the parameters, we were able to generate a n
 Adding newer articles to this graph was significantly cheaper, taking only around 10 seconds depending on the article size, etc.
 Moreover, it only looks at articles within a time window, and hence different parts of the graph can be generated in parallel.
 
-Figure~\ref{fig:sample-news-graph}  shows an example a part of the graph created on articles that followed a Rape Case incident during February-April 2012. We see how the
+Figure~\ref{fig:sample-news-graph}  shows an example of a part of the graph created on articles that followed a Rape Case incident during February-April 2012. We see how the
 story starts with the media covering initial case being filed and the police investigations.
 
 \subsection{Event detection, summarization \& Context extraction}\label{sec:event-detection-summary-context}
@@ -119,13 +119,13 @@ These clusters are considered as events that happen in the corpus. Different clu
 In this way, an event is a cluster of the news graph, which may contain one or more articles. 
 This graph is now useful for answering questions like detecting significant events (dense node clusters), developments in the life of a particular group of actors (visualizing the subgraphs 
 involving the actor set), etc. The intuition behind how the graph structure relates to events in the real world is natural if we study how media reports events. 
-For eg., consider an event like some criminal offence followed by a law suite. At first, articles start appearing which talk about the offence and alleged victims and culprits. Then, this is gradually
+For eg., consider an event like some criminal offence followed by a law suite. At first, articles which talk about the offence and alleged victims and culprits starts appearing. Then, this is gradually
 replaced by the ongoing trial. Across these articles, the common threads are the topics and the CONTINUE/MERGE transformations among the actors (victims and culprits). Hence, these naturally form node clusters in the graph. This real world event is captured 
 by the sequence of the articles that appeared.
 As we show in Section~\ref{sec:baseline-comparison}, events determined by way of clustering on the graph is preferred by users to a similar clustering
 done on raw articles in most cases.
 \subsubsection*{Event summarization}
-To make it easier for the user to understand an event, we summarize the articles part of this event to give a broad idea of the event and show this summarization alongside the articles capturing that event (Section \ref{sec:filter-summarization}). For this, we tried out various document summarizing tools. We finally decided to Text Compactor \footnote{http://textcompactor.com/} which is based on Open Text Summarizer\footnote{http:/libots.sourceforge.net/} and has a convenient API. 
+To make it easier for the user to understand an event, we summarize the articles of this event to give a broad idea of the event and show this summarization alongside the articles capturing that event (Section \ref{sec:filter-summarization}). For this, we tried out various document summarizing tools. We finally decided to Text Compactor \footnote{http://textcompactor.com/} which is based on Open Text Summarizer\footnote{http:/libots.sourceforge.net/} and has a convenient API. 
 \subsubsection*{Context extraction}
 Due to richness of the news graph, the neighbourhood of the story (subgraphs of the base news graph) being currently visualized, serves to add
 useful context. Moreover, different parts of the neighbourhood model different transformations and hence, following
