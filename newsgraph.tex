@@ -3,7 +3,7 @@
 
 Our problem statement can be formally stated as:
 \begin{quote}
- Create an end-to-end news browsing system which given a
+  Create an end-to-end news browsing system which given a
   continuous stream of raw news articles, processes these articles to
   mine and track the underlying news stories and visualizes these for
   a user on an easy-to-use, queryable, personalized and context-full
@@ -12,7 +12,7 @@ Our problem statement can be formally stated as:
 As discussed in the previous section, various approaches have been proposed in the past to tackle one or more components of the above problem
 statement. In this section, we first define a notion of contextuality of a browsing system, and motivate the need for the system to serve multiple flexible and personalizable contexts to a user as per her
 requirements and/or preferences. We reason why we think this is a necessary feature of a news browsing system. Next, we show how rich contexts can be served to a user on the fly based on her intent
-from the graph structured created from the input news corpus, taking specific examples. 
+from the graph structure created from the input news corpus, taking specific examples. 
 Finally, we describe some other desirable features of a news browsing tool. 
 
 \subsection{Context in News browsing}
@@ -33,12 +33,65 @@ Context for a user using our system, comprises of articles, topics,
 actors, events, etc which though not directly related to particular
 story, helps to interpret the story in a broader sense.  Adding
 context serves to make it easier for users to better understand chain
-of news articles around an event.  For eg., consider a crime story
-where the prime suspect is $X$. However, articles which first report
-this crime, do not feature $X$, since he is yet to be named as a
-suspect. However, for the articles that talk of this crime story and
-feature $X$, articles which first report this crime classify as the
-much-needed context. We now give some examples of context in the news graph.
+of news articles around an event. For eg., consider a crime story
+where the prime suspect is $X$. To fully understand the involvement of $X$ in the story,
+one may be required to go through articles which would have first reported the crime (and not 
+mentioned $X$). These articles serve as context. Hence, one way to think of context-serving articles
+are \emph{articles which are coherent with articles containing $X$ and have still more information to provide.}
+
+Given this intuition, we now propose a natural algorithm to determine useful context for a particular part of
+the news graph in consideration. We first define the notion of Continue strength $\Omega$ of an actor at some time.
+Let $\Lambda$ be the set of all actors, $T$ the time index set,
+and $\Omega : \Lambda \times T \rightarrow [0,1]$ gives an actor's continue strength at some time. This score is
+aggregated over all the articles featuring this actor.
+\begin{equation}
+\Omega(\lambda, \tau) = \frac{\sum_{a \in A([\tau - P, \tau + F])}{ContinueScore(\lambda, a)}}{|\{a  | a \in A([\tau - P, \tau + F])\}|}
+\end{equation}
+Here, $ContinueScore(\lambda, a)$ is the continue score (as defined in \cite{choudhary@ecir2008}) of an actor $\lambda$ occurring in article $a$ published around the current time point $\tau$. This score is
+normalized between 0 to 1. $P$ and $F$ are past and future time windows that we keep at 50 days each, and $A([\tau - P, \tau + F])$ are all the articles in this time window.
+
+Given an article $a$, we define $coh_{a}(b)$ as the \emph{coherence} between $a$ and some another article $b$. Intuitively, coherence captures the continuity of story when the two articles are read in succession.
+Clearly, coherence between 2 articles depends on the amount of their actor/topic overlap. Moreover, common actors with strong continue scores contribute less to coherence. So, we quantify coherence as
+\begin{equation}
+coh_{a}(b) = \frac{\sum_{\lambda \in E(a) \cap E(b)}{\Omega(\lambda, \tau)^{-1}}}{|E(a) \cup E(b)|}
+\end{equation}
+where $E(a)$ is the set of actors occurring in article $a$ and $\tau$ is the time at which article $a$ is published. 
+
+Along the same lines, we define $cont_{a}(b)$ as the \emph{context} given by article $b$ to $a$. There are primarily two different kinds of context: a) Context of different actors/topics and how they lead
+to the story in A and b) Context of the same actors/topics in a slightly different setting. Context added by article $b$ can be quantified by the degree of ``new information'' added by $b$. So, we evaluate
+context as
+\begin{equation}
+cont_{a}(b) = \frac{\sum_{\lambda \in E(b)}{\Omega(\lambda, \tau)*ContinueScore(\lambda, a)^{k}}}{|E(b) - E(a)|}
+\end{equation}
+where $k \in [-0.5, 0.5]$ is a user-input parameter which influences which of the 2 kinds of context is more prominent. A higher $k$ prefers context having more information
+around the same actors as those of our article of interest.
+
+A context-giving article is only useful as long as it is coherent with the original article(s).
+Hence, we have to combine these 2 metrics. Before this, we normalize both these metrics to 0 to 1.
+Finally, we apply the following algorithm to get the ``most useful'' neighbourhood of a result set of article nodes.
+
+\begin{algorithmic}
+  \State \textbf{procudure GetNeighbourhood:}
+  \State \algorithmicrequire{Node $n$, Current Weight $w$, Threshold $\theta$}
+  \State \algorithmicensure{Neighbourhood $N$}
+    \If {$w < \theta$}
+      \State return
+    \EndIf
+    \ForAll{node $v \in E(n)$}
+      \If {! visited($v$)} 
+        \State visited($v$) = True
+        \State $w_1 = coh_{n}(v)$
+        \State $w_2 = cont_{n}(v)$
+        \State $w_3 = w_{(n,v)}$
+        \State GetNeighbourhood($n, w_1 * w_2 * w_3, \theta$)
+      \EndIf
+    \EndFor
+\end{algorithmic}
+
+Through this algorithm, we look are assured of a good context coverage while keeping the coherence high.
+An important point to note here is that all of these scores need only by computed once and stored, and not computed for every user query. 
+
+We now give some examples of context in the news graph.
 \begin{figure}
 \caption{Robert Vadra corruption story and its contexts}
 \includegraphics[scale=0.36]{figures/graph-vadra.pdf}

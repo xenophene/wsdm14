@@ -7,3 +7,5 @@
 
 # temporary vim files
 *.swp
+
+.*
