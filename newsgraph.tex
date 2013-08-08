@@ -82,7 +82,7 @@ Finally, we apply the following algorithm to get the ``most useful'' neighbourho
         \State visited($v$) = True
         \State $w_1 = coh_{n}(v)$
         \State $w_2 = cont_{n}(v)$
-        \State $w_3 = w_{(n,v)}$
+        \State $w_3 = edge_weight_{(n,v)}$
         \State GetNeighbourhood($n, w_1 * w_2 * w_3, \theta$)
       \EndIf
     \EndFor
