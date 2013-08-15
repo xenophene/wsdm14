@@ -113,11 +113,11 @@ story starts with the media covering initial case being filed and the police inv
 
 \subsection{Event detection, summarization \& Context extraction}\label{sec:event-detection-summary-context}
 \subsubsection*{Event detection}
-We found the resultant graph from the previous step not suitable for visualization. The graph created is usally very dense, making it hard to follow and study a subgraph in isolation.
-Every edge in the graph covers some transformations between articles, however to convey the purpose of every edge, one needs to label it with the transformations that the edge covers, 
-which further makes visualization overwhelming. 
-We consider this graph more suitable as a rich back-end.
-This graph is created by pre-processing the news corpus once, and then a standard node clustering algorithm (Markov graph clustering) is applied to draw out clusters in this graph. 
+The news graph created is clustered with a standard graph clustering algorithm: Markov graph clustering \cite{Dongen00a} is applied to draw out clusters in this graph as discussed below.
+
+We used the Edge Weight $r(a_1,a_2)$ as defined in \ref{subsec:edge_weight} as the flow (transition probability) from a node $a_1$ to $a_2$. The intuition behind using Edge Weight as flow is that the Edge Weight represents the similarity between two articles in terms of the articles' actor-topic overlap, tfidf score and date of publishing. We can normalize this Edge Weight score such that the sum of all the flows leaving a node $a_1$ is equal to 1 by dividing the score by the sum of the weights of all edges leaving from the node $a_1$. We can now formulate the flow matrix using these scores and run the Markov Clustering Algorithm. As of now, we used the standard inflation factor of 2 as our input for forming the clusters. However, it can be varied as per user's preference on the granularity of clusters.
+
+
 These clusters are considered as events that happen in the corpus. Different clusters may or may not talk about the same story, depending on the proximity of the clusters.
 In this way, an event is a cluster of the news graph, which may contain one or more articles. 
 This graph is now useful for answering questions like detecting significant events (dense node clusters), developments in the life of a particular group of actors (visualizing the subgraphs 

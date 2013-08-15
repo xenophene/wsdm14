@@ -40,83 +40,94 @@ mentioned $X$). These articles serve as context. Hence, one way to think of cont
 are \emph{articles which are coherent with articles containing $X$ and have still more information to provide.}
 
 Given this intuition, we now propose a natural algorithm to determine useful context for a particular part of
-the news graph in consideration. Say a user, on a certain filter query, is presented with an article $a$. We want to identify articles
-conntected to $a$ via a path in the graph, which would be helpful to the user to understand the story and the bigger picture.
+the news graph in consideration. The setting is as follows: A user issues a certain filter query and is presented with article set $S$. We want to identify articles
+related to $S$ via a path in the graph, which would be helpful to the user to understand the story and the bigger picture.
 
-We first define the notion of Continue strength $\Omega$ of an actor at some time, which captures an actor's popularity in at that time.
-Let $\Lambda$ be the set of all actors, $T$ the time index set, then $\Omega : \Lambda \times T \rightarrow [0,1]$. This score is aggregated over all the articles featuring this actor.
+We first define the notion of strength $\Omega$ of an actor $\lambda$ at time $\tau$, which captures this actor's popularity at $\tau$ by looking at the number of articles featuring $\lambda$ published at that time.
+Let $\Lambda$ be the set of all actors, $T$ the time index set, then $\Omega : \Lambda \times T \rightarrow [0,1]$. 
 \begin{equation}
-\Omega(\lambda, \tau) = \frac{\sum_{a \in A([\tau - P, \tau + F])}{ContinueScore(\lambda, a, \tau)}}{|A([\tau - P, \tau + F])|}
+\Omega(\lambda, \tau) = \frac{\sum_{a \in A[\tau - P, \tau + F]}{\mathbb{1}(\lambda \in E(a))}}{|A[\tau - P, \tau + F]|}
 \end{equation}
-Here, $ContinueScore(\lambda, a, \tau)$ is the continue score (as defined in \cite{choudhary@ecir2008}) of an actor $\lambda$ occurring in article $a$ published around the current time point $\tau$. 
-\begin{equation}
-ContinueScore(\lambda, a, \tau) = \frac{\sum_{a \in A([\tau - P, \tau + F])}\mathbb{1}(\lambda \in a)}{|A([\tau - P, \tau + F])|}
-\end{equation}
-This score is normalized between 0 to 1. $P$ and $F$ are past and future time windows that we keep at 50 days each, and $A([\tau - P, \tau + F])$ are all the articles in this time window.
+$P$ and $F$ are past and future time windows that we keep at 50 days each, and $A[\tau - P, \tau + F]$ is the set of all articles published in this time window. $E(a)$ is the set of all actors featuring in article $a$.
 
-Now, we define the following 3 metrics to help us decide whether article $b$ should be served to the user alongside article $a$.
+Now, we define the following 3 metrics to quantify whether article $b$ should be served to the user alongside article $a$.
 \begin{enumerate}
 \item $coh_a(b)$: Coherence of article $b$ with article $a$
-\item $cont_a(b)$: Context added by $b$ to $a$ 
-\item $r(a, b)$: Weight of the edge joining node $a$ and $b$.
+\item $cont_a(b)$: Context added by article $b$ to article $a$ 
+\item $r(a, b)$: Weight of the edge joining node $a$ and $b$
 \end{enumerate}
 
 \subsubsection*{Coherence}
-Given an article $a$, we define $coh_{a}(b)$ as the \emph{coherence} between $a$ and some another article $b$. Intuitively, coherence captures the continuity of story when the two articles are read in succession.
-Clearly, coherence between 2 articles depends on the amount of their actor/topic overlap. Moreover, common actors with strong continue scores should contribute less to coherence. This is because a strong continue score reflects the strong presence (lower importance) of the actor in articles in that particular time window. So, we quantify coherence as
+Given an article $a$, we define $coh_{a}(b)$ as the \emph{coherence} between $a$ and some other article $b$. Intuitively, coherence captures the continuity of the story when the two articles are read in succession.
+Clearly, coherence between 2 articles depends on the amount of their actor/topic overlap. Moreover, common actors with high strength should contribute less to coherence. To substantiate, a globally popular actor such as ``Corruption'' should contribute less to the coherence score
+than a particular instance of a corruption case (having less $\Omega$) like ``CWG Scam''\footnote{http://en.wikipedia.org/wiki/2010\_Commonwealth\_Games}. So, we quantify coherence as
 \begin{equation}
-coh_{a}(b) = \frac{\sum_{\lambda \in E(a) \cap E(b)}{\Omega(\lambda, \tau)^{-1}}}{|E(a) \cup E(b)|}
+coh_{a}(b) = \frac{\sum_{\lambda \in E(a) \cap E(b)}{(\frac{\Omega(\lambda, \tau_a)}{\Omega^{*}})^{-1}}}{|E(a)|}
 \end{equation}
-where $E(a)$ is the set of actors occurring in article $a$ and $\tau$ is the time at which article $a$ is published. 
+where $\Omega^{*}=min_{\lambda \in E(a) \cap E(b)}{\Omega(\lambda, \tau)}$ is the minimum actor strength and $\tau_a$ is the time at which article $a$ is published. 
+$\Omega^{*}$ is used to normalize $coh_a(b)$ between 0 and 1.
 
 \subsubsection*{Context}
-Along the same lines, we define $cont_{a}(b)$ as the \emph{context} given by an article $b$ to $a$. There are two different kinds of context that a user may be interested in: 1) Context provided by different actors/topics and how they relate
-to the story in $a$. For instance, for the Delhi gang rape story, articles related to the rape incident that happened in Kolkata and controversy surrounding it provide this type of context. 2) Context of the same actors/topics in a slightly different setting. For instance, for the October 2012 petrol price hike story, articles related to the price hike from May 2012 provide this type of context. Context added by an article $b$ can be quantified by the degree of ``new information'' added by $b$.
-So, we compute context as
+Along the same lines, we define $cont_{A}(b)$ as the \emph{context} given by an article $b$ to article set $A$. There are two different kinds of context that a user may be interested in: 
+\begin{enumerate}
+\item Context provided by different actors/topics and how they relate to the story in $A$. For instance, for the Delhi gang rape story, articles related to the rape incident that happened in Kolkata and controversy surrounding it provide this type of context. 
+\item Context of the same actors/topics in a slightly different setting. For instance, for the October 2012 petrol price hike story, articles related to the price hike from May 2012 provide this type of context. 
+\end{enumerate}
+It is not fair for a system to assume preference for a particular kind of context in general, and a user depending on her background and the task at hand, may prefer one kind over another. Hence, we drive this feature through a user-defined parameter $k$. 
+We quantify context as
 \begin{equation}
-cont_{a}(b) = \frac{\sum_{\lambda \in E(b)}{\Omega(\lambda, \tau)*ContinueScore(\lambda, a)^{k}}}{|E(b) - E(a)|}
+cont_{A}(b) = \frac{\sum_{\lambda \in E(b)}{\Omega(\lambda, \tau_b)*(\frac{\sum_{c \in A}\mathbb{1}(\lambda \in E(c))}{|A|})^{k}}}{|E(b)|}
 \end{equation}
-where $k \in [-0.5, 0.5]$ is a user-input parameter which influences which of the 2 kinds of context is more prominent. A higher $k$ prefers context having more information
-around the same actors as those of our article of interest. For our experiments, we have kept the value of $k$ as 0.
+where $\tau_b$ is the time at which $b$ is published and $k \in [0, 1]$ is a user-input parameter which influences which of the 2 kinds of context is more prominent. A lower $k$ favours context having more information
+around the same actors as those of our article of interest. For our experiments, we have kept the value of $k$ as 0.5.
 
 \subsubsection*{Edge weights}
+\label{subsec:edge_weight}
 \cite{choudhary@ecir2008} defined the edge weight $r:V \times V \rightarrow [0,1]$ as:
 \begin{equation}
 r(a, b) = sim(a,b) * Jacc(E(a), E(b)) * e^{-\alpha(\tau_a - \tau_b)}
 \end{equation}
 Here, $sim$ is cosine similarity between articles represented as vectors in the TfIdf space, $Jacc$ is the jaccard similarity between
-the entity sets of articles $a$ and $b$, and the final term is to factor in the time elapsed between their publishing dates ($\tau_a$ \& $\tau_b$).
+the entity sets of articles $a$ and $b$, and the final term is to factor in the time elapsed (in days) between their publishing dates ($\tau_a$ \& $\tau_b$).
+The value of $\alpha$ was kept at 1. Edge weights are taken to capture the overall similarity between the articles.
 
 Next, we normalize these metrics between 0 to 1 by dividing with the maximum score that is observed in the window defined by $(\tau - P, \tau + F)$. This
 step is needed so we can compare these scores across different news stories. Our cumulative score is the product of these metrics.
 
-Finally, we apply the following algorithm to get the ``most useful'' neighbourhood of the articles that are the result of user's filter query. This algorithm is a walk on the news graph starting from every article $a$, 
-going as far as the cumulative score does not drop below a threshold $\theta$.
+Finally, we apply the following algorithm to get the ``most useful'' neighbourhood of the articles that are the result of user's filter query. This algorithm is a walk on the news graph starting from articles in the set $S$, 
+going as far as till cumulative score does not drop below a threshold $\theta$.
 
 \begin{algorithmic}
   \State \textbf{\underline{GetNeighbourhood}}
-  \State \algorithmicrequire{Node $n$, Current Weight $w$, Threshold $\theta$}
+  \State \algorithmicrequire{Input article set $S$, Threshold $\theta$}
   \State \algorithmicensure{Neighbourhood $N$}
-    \If {$w < \theta$}
-      \State return \{\}
-    \EndIf
-    \State $N = N\cup\{n\}$
-    \ForAll{node $v \in EdgeSet(n)$}
-      \If {visited($v$) == False} 
-        \State visited($v$) = True
-        \State $w_1 \leftarrow coh_{n}(v)$
-        \State $w_2 \leftarrow cont_{n}(v)$
-        \State $w_3 \leftarrow r(n,v)$
-        \State $w_{eff} \leftarrow w_1 * w_2 * w_3 * w$
-        \State GetNeighbourhood($v, w_{eff}, \theta$)
-      \EndIf
+    \State $Q \leftarrow$ Empty\_Priority\_Queue
+    \ForAll {node $n \in S$}
+      \State Enqueue($Q$, ($n, 1$))
     \EndFor
+    \While {Empty($Q$) == False}
+      \State $(v, w)$ = Dequeue($Q$)
+      \If {$w \geq \theta$}
+        \State $N \leftarrow N \cup \{v\}$
+        \ForAll {node $n \in Neighbours(v)$}
+          \State $w_1 \leftarrow coh_{v}(n)$
+          \State $w_2 \leftarrow cont_{S}(n)$
+          \State $w_3 \leftarrow r(v,n)$
+          \State $w_{eff} \leftarrow w_1 * w_2 * w_3 * w$
+          \State Enqueue\_Or\_Update\_Node($Q$, ($n, w_{eff}$))
+        \EndFor
+      \EndIf
+    \EndWhile
+    \State return $N$
 \end{algorithmic}
 
-Here, $EdgeSet$ returns all of a node's neighbours that are not covered in the result set. We initialized the neighbourhood set $N$ as an empty
-set, and kept $\theta=0.5$ for our experiments.  We now give some examples of context in the news graph.
+Here, $Neighbours$ returns all of a node's neighbours in the graph. $Q$ is an object of priority queue ADT\footnote{Abstract Datatype} which was implemented as a heap. \emph{Enqueue} adds a node according to its weight to the heap. \emph{Enqueue\_Or\_Update\_Node} has the semantics that it updates the weight and position of node $n$ in $Q$ if found, else adds the node to $Q$.
+\emph{Dequeue} returns the node with the highest weight in the heap. We call $GetNeighbourhood(S, \theta)$ where $S$ is the result set of a user's query and $\theta = 0.5$ for our experiments. 
+The intuition behind this algorithm is that we want to identify those nodes from the neighbourhood of the result set $S$, which are both coherent and contextual to $S$, and do so in an efficient manner.
+We now give some examples of context in the news graph.
 
 \begin{figure}
+
 \caption{Robert Vadra corruption story and its contexts}
 \includegraphics[scale=0.36]{figures/graph-vadra.pdf}
 \label{fig:vadra-corruption}
