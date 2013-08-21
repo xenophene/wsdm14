@@ -9,11 +9,9 @@ Our problem statement can be formally stated as:
   a user on an easy-to-use, queryable, personalized and context-full
   interface.
 \end{quote}
-As discussed in the previous section, various approaches have been proposed in the past to tackle one or more components of the above problem
-statement. In this section, we first define a notion of contextuality of a browsing system, and motivate the need for the system to serve multiple flexible and personalizable contexts to a user as per her
+In this section, we first define a notion of contextuality of a browsing system, and motivate the need for the system to serve multiple flexible and personalizable contexts to a user as per her
 requirements and/or preferences. We reason why we think this is a necessary feature of a news browsing system. Next, we show how rich contexts can be served to a user on the fly based on her intent
 from the graph structure created from the input news corpus, taking specific examples. 
-Finally, we describe some other desirable features of a news browsing tool. 
 
 \subsection{Context in News browsing}
 Let us attempt to define clearly what we mean by context. The
@@ -40,15 +38,15 @@ mentioned $X$). These articles serve as context. Hence, one way to think of cont
 are \emph{articles which are coherent with articles containing $X$ and have still more information to provide.}
 
 Given this intuition, we now propose a natural algorithm to determine useful context for a particular part of
-the news graph in consideration. The setting is as follows: A user issues a certain filter query and is presented with article set $S$. We want to identify articles
+the news graph in consideration. The setting is as follows: A user issues a certain filter query (like ``{\bf Corruption} AND {\bf Manmohan Singh}''). The result article set $S$ is computed by applying this filter on the news graph backend. Now, we want to identify articles
 related to $S$ via a path in the graph, which would be helpful to the user to understand the story and the bigger picture.
 
-We first define the notion of strength $\Omega$ of an actor $\lambda$ at time $\tau$, which captures this actor's popularity at $\tau$ by looking at the number of articles featuring $\lambda$ published at that time.
-Let $\Lambda$ be the set of all actors, $T$ the time index set, then $\Omega : \Lambda \times T \rightarrow [0,1]$. 
+We first define the notion of strength $\Omega$ of an entity\footnote{Entity can refer to an actor or a topic} $\lambda$ at time $\tau$, which captures this entity's popularity at $\tau$ as a function of the number of articles featuring $\lambda$ published in the time window $[P - \tau, F + \tau]$.
+%Let $\Lambda$ be the set of all actors, $T$ the time index set, then $\Omega : \Lambda \times T \rightarrow [0,1]$. 
 \begin{equation}
-\Omega(\lambda, \tau) = \frac{\sum_{a \in A[\tau - P, \tau + F]}{\mathbb{1}(\lambda \in E(a))}}{|A[\tau - P, \tau + F]|}
+\Omega(\lambda, \tau) = \frac{\sum_{a \in \mathcal{A}[\tau - P, \tau + F]}{\mathbb{1}(\lambda \in \mathcal{E}(a))}}{|\mathcal{A}[\tau - P, \tau + F]|}
 \end{equation}
-$P$ and $F$ are past and future time windows that we keep at 50 days each, and $A[\tau - P, \tau + F]$ is the set of all articles published in this time window. $E(a)$ is the set of all actors featuring in article $a$.
+$P$ and $F$ are past and future time windows that we keep at 50 days each, and $\mathcal{A}[\tau - P, \tau + F]$ is the set of all articles published in this time window. $\mathcal{E}(a)$ is the set of all entities featuring in article $a$.
 
 Now, we define the following 3 metrics to quantify whether article $b$ should be served to the user alongside article $a$.
 \begin{enumerate}
@@ -59,33 +57,54 @@ Now, we define the following 3 metrics to quantify whether article $b$ should be
 
 \subsubsection*{Coherence}
 Given an article $a$, we define $coh_{a}(b)$ as the \emph{coherence} between $a$ and some other article $b$. Intuitively, coherence captures the continuity of the story when the two articles are read in succession.
-Clearly, coherence between 2 articles depends on the amount of their actor/topic overlap. Moreover, common actors with high strength should contribute less to coherence. To substantiate, a globally popular actor such as ``Corruption'' should contribute less to the coherence score
-than a particular instance of a corruption case (having less $\Omega$) like ``CWG Scam''\footnote{http://en.wikipedia.org/wiki/2010\_Commonwealth\_Games}. So, we quantify coherence as
+Clearly, coherence between 2 articles depends on the amount of their entity overlap. Moreover, common entities with high strength should contribute less to coherence. This idea is similar in spirit to that of ``Inverse document frequency'' in Tf-Idf. Words (entities) common across many documents (articles) are less characteristic in describing a particular document (story). 
+More prominent entities will by definition occur in many articles, and can potentially tie many unrelated stories together. 
+
+To substantiate, a globally popular entity such as ``Soccer'' should contribute less to the coherence score
+of a story than particular instances of soccer stories (having less $\Omega$) like ``EPL 2012'' and ``UEFA Cup 2012''. So, we quantify coherence as
 \begin{equation}
-coh_{a}(b) = \frac{\sum_{\lambda \in E(a) \cap E(b)}{(\frac{\Omega(\lambda, \tau_a)}{\Omega^{*}})^{-1}}}{|E(a)|}
+coh_{a}(b) = \frac{\sum_{\lambda \in \mathcal{E}(a) \cap \mathcal{E}(b)}{(\frac{\Omega(\lambda, \tau_a)}{\Omega^{*}})^{-1}}}{|\mathcal{E}(a)|}
 \end{equation}
-where $\Omega^{*}=min_{\lambda \in E(a) \cap E(b)}{\Omega(\lambda, \tau)}$ is the minimum actor strength and $\tau_a$ is the time at which article $a$ is published. 
+where $\Omega^{*}=min_{\lambda \in \mathcal{E}(a) \cap \mathcal{E}(b)}{\Omega(\lambda, \tau_a)}$ is the minimum actor strength and $\tau_a$ is the time at which article $a$ is published. 
 $\Omega^{*}$ is used to normalize $coh_a(b)$ between 0 and 1.
 
 \subsubsection*{Context}
-Along the same lines, we define $cont_{A}(b)$ as the \emph{context} given by an article $b$ to article set $A$. There are two different kinds of context that a user may be interested in: 
+Along the same lines, we define $cont_{A}(b)$ as the \emph{context} given by an article $b$ to an article set (news story) $A$. There are two different kinds of context that a user may be interested in (exemplified on a Petrol price hike story; see Figure~\ref{fig:petrol}):
 \begin{enumerate}
-\item Context provided by different actors/topics and how they relate to the story in $A$. For instance, for the Delhi gang rape story, articles related to the rape incident that happened in Kolkata and controversy surrounding it provide this type of context. 
-\item Context of the same actors/topics in a slightly different setting. For instance, for the October 2012 petrol price hike story, articles related to the price hike from May 2012 provide this type of context. 
+\item Context provided by new entities not featuring in the story of $A$. For instance, context provided by the reactions of different political parties to a story on Petrol price hike
+\item Context of the stories around the same entities in a different setting. For instance, context provided by the story of Petrol price hike of May 2012 to the one in October 2012
 \end{enumerate}
-It is not fair for a system to assume preference for a particular kind of context in general, and a user depending on her background and the task at hand, may prefer one kind over another. Hence, we drive this feature through a user-defined parameter $k$. 
+It is not fair for a system to assume preference for a particular kind of context in general, and a user depending on her background and the task at hand, may prefer one kind over another. Hence, we drive this feature through a user-adjustable parameter $k$. 
 We quantify context as
 \begin{equation}
-cont_{A}(b) = \frac{\sum_{\lambda \in E(b)}{\Omega(\lambda, \tau_b)*(\frac{\sum_{c \in A}\mathbb{1}(\lambda \in E(c))}{|A|})^{k}}}{|E(b)|}
+cont_{A}(b) = \frac{\sum_{\lambda \in \mathcal{E}(b)}{\Omega(\lambda, \tau_b)*(\frac{\sum_{a \in A}\mathbb{1}(\lambda \in \mathcal{E}(a))}{|A|})^{k}}}{|\mathcal{E}(b)|}
 \end{equation}
-where $\tau_b$ is the time at which $b$ is published and $k \in [0, 1]$ is a user-input parameter which influences which of the 2 kinds of context is more prominent. A lower $k$ favours context having more information
-around the same actors as those of our article of interest. For our experiments, we have kept the value of $k$ as 0.5.
+where $\tau_b$ is the time at which $b$ is published, $\frac{\sum_{a \in A}\mathbb{1}(\lambda \in \mathcal{E}(a))}{|A|}$ captures the strength of entity $\lambda$ in set $A$ and $k \in [0, 1]$ is the parameter which influences which of the 2 kinds of context is more prominent. A lower $k$ dampens the weight given to the strength of common entities between $A$ and $b$, and hence favours context 
+around the popular entities (high $\Omega$). Conversely, a higher $k$ forces articles having a good overlap of occuring entities with set $A$ to result in a higher context score.
+In table~\ref{tab:different-contexts}, we show the different articles that score high on context on 3 different values of $k$. The base story $A$ ({\em North Koreans mourn Kim}\footnote{http://www.thehindu.com/news/international/north-koreans-mourn-kim/article4206294.ece}) is an article from 2012 about the late Kim Jong-il\footnote{http://en.wikipedia.org/wiki/Kim\_Jong-il}. 
+
+\begin{table}
+\small
+\begin{tabular}{|l|p{7cm}|}
+\hline
+{\bf {\em k}} & {\bf Headlines of high-context articles}\\
+\hline
+0 & {\em Footage shows Kim Jong-un in military drill (08/01/12)}, {\em North Korea plans nuclear test (24/01/13)}, {\em North Korea says its in state of war with South Korea (30/03/13)}\\
+\hline
+0.5 & {\em Army chief removal seen as purge (16/07/12)}, {\em North Korea's new leadership is turning toward reform: Cumings (01/03/12)}\\
+\hline
+1 & {\em Eternal leader Kims body to be enshrined (12/01/12)}, {\em Emerging Stocks Sink as Kim Jong Il Death Sows Stability Concern (30/12/11)}\\
+\hline
+\end{tabular}
+\caption{Context-adding articles for different $k$}
+\label{tab:different-contexts}
+\end{table}
 
 \subsubsection*{Edge weights}
 \label{subsec:edge_weight}
-\cite{choudhary@ecir2008} defined the edge weight $r:V \times V \rightarrow [0,1]$ as:
+The edge weight $r:\mathcal{A} \times \mathcal{A} \rightarrow [0,1]$ on the news graph $\mathcal{G}$ where $\mathcal{A}$ is the set of all articles is defined as:
 \begin{equation}
-r(a, b) = sim(a,b) * Jacc(E(a), E(b)) * e^{-\alpha(\tau_a - \tau_b)}
+r(a, b) = sim(a,b) * Jacc(\mathcal{E}(a), \mathcal{E}(b)) * e^{-\alpha(\tau_a - \tau_b)}
 \end{equation}
 Here, $sim$ is cosine similarity between articles represented as vectors in the TfIdf space, $Jacc$ is the jaccard similarity between
 the entity sets of articles $a$ and $b$, and the final term is to factor in the time elapsed (in days) between their publishing dates ($\tau_a$ \& $\tau_b$).
@@ -94,18 +113,18 @@ The value of $\alpha$ was kept at 1. Edge weights are taken to capture the overa
 Next, we normalize these metrics between 0 to 1 by dividing with the maximum score that is observed in the window defined by $(\tau - P, \tau + F)$. This
 step is needed so we can compare these scores across different news stories. Our cumulative score is the product of these metrics.
 
-Finally, we apply the following algorithm to get the ``most useful'' neighbourhood of the articles that are the result of user's filter query. This algorithm is a walk on the news graph starting from articles in the set $S$, 
-going as far as till cumulative score does not drop below a threshold $\theta$.
+Our algorithm can now be described as follows: We attempt to get ``most useful'' neighbourhood of $S$. The algorithm is a walk on the news graph starting from articles in $S$, 
+going as far as till we get a preset number of stories to present to the user.
 
 \begin{algorithmic}
   \State \textbf{\underline{GetNeighbourhood}}
-  \State \algorithmicrequire{Input article set $S$, Threshold $\theta$}
+  \State \algorithmicrequire{Input article set $S$, MaxStories $\theta$}
   \State \algorithmicensure{Neighbourhood $N$}
     \State $Q \leftarrow$ Empty\_Priority\_Queue
     \ForAll {node $n \in S$}
       \State Enqueue($Q$, ($n, 1$))
     \EndFor
-    \While {Empty($Q$) == False}
+    \While {Empty($Q$) is {\bf False} and $|N| \leq \theta$}
       \State $(v, w)$ = Dequeue($Q$)
       \If {$w \geq \theta$}
         \State $N \leftarrow N \cup \{v\}$
@@ -122,7 +141,7 @@ going as far as till cumulative score does not drop below a threshold $\theta$.
 \end{algorithmic}
 
 Here, $Neighbours$ returns all of a node's neighbours in the graph. $Q$ is an object of priority queue ADT\footnote{Abstract Datatype} which was implemented as a heap. \emph{Enqueue} adds a node according to its weight to the heap. \emph{Enqueue\_Or\_Update\_Node} has the semantics that it updates the weight and position of node $n$ in $Q$ if found, else adds the node to $Q$.
-\emph{Dequeue} returns the node with the highest weight in the heap. We call $GetNeighbourhood(S, \theta)$ where $S$ is the result set of a user's query and $\theta = 0.5$ for our experiments. 
+\emph{Dequeue} returns the node with the highest weight in the heap. We call $GetNeighbourhood(S, \theta)$ where $S$ is the result set of a user's query and $\theta = 30$ for our experiments. The choice of $\theta$ is driven by the front-end interface, and we found 50 to work well.
 The intuition behind this algorithm is that we want to identify those nodes from the neighbourhood of the result set $S$, which are both coherent and contextual to $S$, and do so in an efficient manner.
 We now give some examples of context in the news graph.
 
@@ -153,19 +172,9 @@ For a user wanting to deeply understand the circumstances behind fuel price hike
 all past fuel price hikes is vital. For other users, the political
 sphere and its reactions or the reactions of the petrol retailers may be of more interest.
 
-As we have seen context is a fairly general notion and can be
-instantiated in many ways depending on the user's point of view. It is
-also clear from the examples above that the primary mode of inferring
-contextual relationships between articles is by studying the
-co-occurence and development of relationships of actors and topics in
-time. We now discuss the {\em news graph} first defined
-in~\cite{choudhary@ecir2008}, which provides a natural representation
-of such relationships.
-
-
-\subsection{How the news graph of~\cite{choudhary@ecir2008} creates personalized contexts}
-Using the graph, the users have access to multiple contexts which
-develop a unique aspect of the story they are following, and which
+\subsection{Creating Personalized \& Flexible Contexts}
+Using the graph, the users have access to multiple contexts, each of which, 
+develops a unique aspect of the story, and which
 could highlight and bring forth previously unknown connections among
 actors and topics. In this section, we will take examples to show how
 different users would want/choose to explore same/different contexts

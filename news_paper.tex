@@ -38,31 +38,20 @@
 
 \maketitle
 \begin{abstract}
-A news browser opening a newspaper or loading a news website jumps
-into a story somewhere in the middle and is faced with the complex
-task of figuring out the story's history and context(s). This task is
-extremely difficult with current keyword search interfaces which
-simply provide a list of articles. The complexity of the task is
-compounded by the fact that different users are interested in different
-contexts of the story, and it is impossible, {\em a priori} to guess
-what a particular user's interest may be. Our aim in this paper is to
-present a news-browsing tool that allows for the complex task of
-context creation, we call it {\em personalized flexible context
-  extraction}, by preprocessing and storing articles in a structured
-way that makes it easy for the user to explore different
-contexts. Building on the work of Choudhary et. al. (ECIR, 2008) we
-model the news corpus as a graph of interacting actors and topics,
-each node being a news story. This graph is used as the backend to our
-system, called ESTHETE.  Our approach involves spending computational
-resources on preprocessing rather than processing. The advantage of
-this approach is that the incremental computational expense in
-incorporating new articles as they are published is minimal. This
-approach marks a significant departure from much of the research on
-news browsing in the literature which usually treats the entire corpus
-as a semi-structured input when presented with individual queries. We
-present several examples where ESTHETE can be used to follow stories
-spanning many days or weeks. We also report on a detailed user
-evaluation which highlights the usefulness of our system.
+Providing the history and context(s) of a news article that emerges in
+the middle of an evolving news story--sometimes multiple news stories--is
+a complex task. The complexity of the task is compounded by the fact that
+different users are interested in different contexts of the article, and
+it is impossible to guess what a particular user is most interested in. In
+this paper, we introduce ESTHETE, a system that provides rich context(s)
+(through what we call {\em personalized flexible context
+extraction}), by preprocessing and storing articles in a structured
+representation (directed graphs) that makes it easy for the user to
+explore different contexts. We formally define what constitutes a ``good'' news story and give an algorithm
+to efficiently compute coherent and contextfull news stories from the news graph. The advantage of this approach is that the
+incremental computational expense in incorporating new articles as they are published is minimal.
+We describe the design and features of ESTHETE, and present the results of a comprehensive user study highlighting the usefulness of our system. 
+Our system is available at: {\tt http://konfrap.com/esthete}.
 
 \end{abstract}
 
