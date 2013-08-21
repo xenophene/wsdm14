@@ -2,24 +2,17 @@
 \label{sec:eval}
 
 We conducted several user studies to evaluate ESTHETE, which is a system composed of a data structural graphical representation of news articles with a timeline-based visualisation.
-\begin{figure*}[ht]
-\caption{A screenshot of our tool visualizing Rape-related cases from India in 2012}
-\center{
-  \includegraphics[scale=0.3]{figures/complete.png}
-}
-\label{fig:complete-tool-screenshot}
-\end{figure*}
  %%MR: I have talked specifically about presentation here. Make sure that this has been described somewhere in the text previously. 
 
-\begin{itemize}
+\squishlist
 	
-	\item {\bf Usability and Effectiveness:} For our system to be useful, not only does it have to be easy to use, but also help users understand the big picture of the news story they are interested in. Our experiments in \ref{subsec:usability} evaluates these aspects.
+	\item {\bf Usability and Effectiveness:} For our system to be useful, not only does it have to be easy to use, but also help users understand the big picture of the news story they are interested in. Our experiments in \ref{subsec:usability} evaluate these aspects.
 	
-	\item {\bf Precision:} A story presented on the timeline has several different aspects associated with it.  A user can filter out the relevant aspects by selecting or deselecting topics and entities identified by the system. The key question we wanted to answer was to find out how effective these filters are in presenting relevant results. Note that the filtering is not a simple keyword filter, but requires that sufficient surrounding context is also retained.
+	\item {\bf Precision:} A story presented on the timeline has several different aspects associated with it.  A user can filter out the relevant aspects by selecting or deselecting topics and actors identified by the system. When a user issues a filter query, how relevant are the returned results? Note that querying is not just a keyword match, but also computes and returns context-adding articles (Section~\ref{sec:finding-context}).
 	
 	\item {\bf News graphs as a framework:} Finally, our third experiment establishes the usefulness of representing news articles as a graph. We compare our news graph framework to two other baselines -- the articles themselves, and a clustering of articles using k-means clustering.
 	
-\end{itemize}
+\squishend
 
 
 \subsection{Setup}
@@ -40,10 +33,10 @@ The three user studies made use of the following setup: an article group, in its
 \begin{center}
 \small
 %\hline
-\begin{tabular}{|p{.63cm}|p{.60cm}|p{1.05cm}|p{.75cm}|p{1.0cm}|p{.75cm}|p{1.0cm}|p{.75cm}|}
+\begin{tabular}{|p{.69cm}|p{.65cm}|p{.70cm}|p{.70cm}|p{.70cm}|p{.70cm}|p{.70cm}|p{.70cm}|}
 \hline
-\multirow{2}{*}{{\bf Story}} & \multirow{2}{*}{\parbox{.75cm}{\centering{ \bf No. of users}}} & \multicolumn{2}{p{1.75cm}}{\centering{\bf Ease of use}} & \multicolumn{2}{p{1.75cm}}{\centering{\bf New Information}} & \multicolumn{2}{p{1.75cm}}{\centering{\bf Big Picture}}\\ \cline{3-8}
-& & {\raggedleft{Esthete}} & {\raggedleft{Google News}} &{\raggedleft{ Esthete}} & {\raggedleft{Google News}} & {\raggedleft{Esthete}} & {\raggedleft{Google News}} \\
+\multirow{2}{*}{{\bf Story}} & \multirow{2}{*}{\parbox{.55cm}{{\bf \# users}}} & \multicolumn{2}{p{1.85cm}|}{{\bf Ease of use}} & \multicolumn{2}{p{1.95cm}|}{\centering{\bf New Information}} & \multicolumn{2}{p{1.55cm}|}{\centering{\bf Big Picture}}\\ 
+\cline{3-8} & & E & G & E & G & E & G \\
 \hline
 S1 & 22 & 3.76 & 4.25 & 4.25 & 3.4 & 4.3 & 3.66\\
 S2 & 12 & 3.83 & 4.18 & 4.29 & 3.5 & 4.39 & 3.71 \\
@@ -51,7 +44,7 @@ S3 & 6 & 3.75 & 4.33 & 4.4 & 3.5 & 4.4 & 3.66\\
 \hline
 \end{tabular}
 \end{center}
-\caption{Average ratings for usability}
+\caption{Average ratings for usability (out of 5); E:ESTHETE, G: Google News}
 \label{tab:ease}
 \end{table}
 
@@ -69,7 +62,24 @@ Clearly, the users found our system to be more effective than Google News in gai
 
 
 %%MR: Instead of using ``tool'', use ``system''
- We also compared the effectiveness of our system, to help users understand a story in depth, with Google News. We asked 18 users to use either our system or Google News in order to understand any of the three stories listed above. The users had to pick one story of their interest and were allowed to interact with their choosen system for a session lasting 25 minutes. The user's task was to learn as much as they can about their choosen story using a system. Then, once they had completed their interaction with their choosen system (ESTHETE or Google News), they were asked to answer a series of very specific questions related to the story they studied. For example, for the story S2 (Corruption Story), we had questions such as \emph{Do you have information to write a summary of the interactions between Arvind Kejriwal and Robert Vadra?} and \emph{Do you have information to write a summary of the news of Robert Vadra's land dealings in Haryana?}. For these questions, the users had to answer a Yes or a No based on their perception of how easy or difficult they feel it is to answer these questions using the system they just used. The users replied Yes if they felt that they could answer the question using the system they just used and vice versa.
+\begin{table}
+\small
+\begin{tabular}{|c|p{7cm}|}
+\hline
+{\bf Story} & {\bf Questions asked}\\
+\hline
+S1 & {\em Did you learn about the reactions of different political particles to the Delhi rape incident?}, {\em Did you learn about the health condition of the victim following the crime?}\\
+\hline
+S2 & {\em Did you learn about the interactions between Arvind Kejriwal and Robert Vadra?}\\
+\hline
+S2 & {\em Did you learn about the reactions of AIDMK and DMK to the petrol price hike?}\\
+\hline
+\end{tabular}
+\caption{Yes-No questions asked to compare ESTHETE with Google News}
+\label{tab:domain-yes-no-questions}
+\end{table}
+We also compared the effectiveness of our system, to help users understand a story in depth, with Google News. We asked 18 users to use either our system or Google News in order to understand any of the three stories listed above. The users had to pick one story of their interest and were allowed to interact with their choosen system for a session lasting 25 minutes. The user's task was to learn as much as they can about their choosen story using a system. Then, once they had completed their
+interaction with their choosen system (ESTHETE or Google News), they were asked to answer a series of very specific questions related to the story they studied. Some of these questions are shown in table~\ref{tab:domain-yes-no-questions}. For these questions, the users had to answer a Yes or a No based on their perception of how easy or difficult they feel it is to answer these questions using the system they just used. The users replied Yes if they felt that they could answer the question using the system they just used and vice versa.
 
 \begin{table}
 \small
@@ -77,7 +87,7 @@ Clearly, the users found our system to be more effective than Google News in gai
 \begin{tabular}{|l|p{1.00cm}|p{1.45cm}|p{1.00cm}|p{1.00cm}|p{1.00cm}|}
 \hline
 %% Rahul: I feel that the column headings of the table are a bit unclear.
-{\bf Story} & {\bf No. of responses} & {\bf ESTHETE only} & {\bf Google News only} & {\bf Both} &{\bf None}\\
+{\bf Story} & {\bf \# responses} & {\bf ESTHETE only} & {\bf Google News only} & {\bf Both} &{\bf None}\\
 \hline
 S1 & 36 & 23 & 2 & 9 & 2\\
 S2 & 12 & 9 & 0 & 2 & 1\\
@@ -99,7 +109,7 @@ The results are tabulated in Table \ref{tab:effectiveness}. The table entries sh
 \small
 \begin{tabular}{|c|p{1.25cm}|p{1.25cm}|c|}
 \hline
-{\bf Story} & {\bf No. of users} & {\bf Avg. no. of filters} & {\bf Precision}\\
+{\bf Story} & {\bf \# users} & {\bf Avg. \# filters} & {\bf Precision}\\
 \hline
 S1 & 10 & 3.4 & 0.89\\
 S2 & 10 & 2.5 & 0.92\\

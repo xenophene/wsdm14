@@ -37,11 +37,13 @@ one may be required to go through articles which would have first reported the c
 mentioned $X$). These articles serve as context. Hence, one way to think of context-serving articles
 are \emph{articles which are coherent with articles containing $X$ and have still more information to provide.}
 
+\subsection{Finding useful Context(s) of a story}
+\label{sec:finding-context}
 Given this intuition, we now propose a natural algorithm to determine useful context for a particular part of
 the news graph in consideration. The setting is as follows: A user issues a certain filter query (like ``{\bf Corruption} AND {\bf Manmohan Singh}''). The result article set $S$ is computed by applying this filter on the news graph backend. Now, we want to identify articles
 related to $S$ via a path in the graph, which would be helpful to the user to understand the story and the bigger picture.
 
-We first define the notion of strength $\Omega$ of an entity\footnote{Entity can refer to an actor or a topic} $\lambda$ at time $\tau$, which captures this entity's popularity at $\tau$ as a function of the number of articles featuring $\lambda$ published in the time window $[P - \tau, F + \tau]$.
+We first define the notion of strength $\Omega$ of an entity\footnote{Entity can refer to an actor or a topic} $\lambda$ at time $\tau$, which captures this entity's popularity at $\tau$ as a function of the number of articles featuring $\lambda$ published in the time window $[\tau - P, \tau + F]$.
 %Let $\Lambda$ be the set of all actors, $T$ the time index set, then $\Omega : \Lambda \times T \rightarrow [0,1]$. 
 \begin{equation}
 \Omega(\lambda, \tau) = \frac{\sum_{a \in \mathcal{A}[\tau - P, \tau + F]}{\mathbb{1}(\lambda \in \mathcal{E}(a))}}{|\mathcal{A}[\tau - P, \tau + F]|}
@@ -99,6 +101,11 @@ In table~\ref{tab:different-contexts}, we show the different articles that score
 \caption{Context-adding articles for different $k$}
 \label{tab:different-contexts}
 \end{table}
+\begin{figure}
+\caption{The fuel price hike story (September 2012) and its contexts}
+\includegraphics[scale=0.30]{figures/graph-petrol.pdf}
+\label{fig:petrol}
+\end{figure}
 
 \subsubsection*{Edge weights}
 \label{subsec:edge_weight}
@@ -143,12 +150,13 @@ going as far as till we get a preset number of stories to present to the user.
 Here, $Neighbours$ returns all of a node's neighbours in the graph. $Q$ is an object of priority queue ADT\footnote{Abstract Datatype} which was implemented as a heap. \emph{Enqueue} adds a node according to its weight to the heap. \emph{Enqueue\_Or\_Update\_Node} has the semantics that it updates the weight and position of node $n$ in $Q$ if found, else adds the node to $Q$.
 \emph{Dequeue} returns the node with the highest weight in the heap. We call $GetNeighbourhood(S, \theta)$ where $S$ is the result set of a user's query and $\theta = 30$ for our experiments. The choice of $\theta$ is driven by the front-end interface, and we found 50 to work well.
 The intuition behind this algorithm is that we want to identify those nodes from the neighbourhood of the result set $S$, which are both coherent and contextual to $S$, and do so in an efficient manner.
-We now give some examples of context in the news graph.
+
+\subsection{Some example News Graphs}
+In this section, we present sample news graphs generated on various stories and show how context is useful for each of them.
 
 \begin{figure}
-
 \caption{Robert Vadra corruption story and its contexts}
-\includegraphics[scale=0.36]{figures/graph-vadra.pdf}
+\includegraphics[scale=0.30]{figures/graph-vadra.pdf}
 \label{fig:vadra-corruption}
 \end{figure}
 
@@ -159,58 +167,29 @@ how has this controversy spiralled to include the top political parties of India
 become increasingly inaccessible to a user with less prior context. However, 
 using the graph, we can provide this context at any stage. Moreover, while following the story, 
 the reader can look for how have the political parties reacted to this story as another context.
-
-\begin{figure}
-\caption{The fuel price hike story (September 2012) and its contexts}
-\includegraphics[scale=0.32]{figures/graph-petrol.pdf}
-\label{fig:petrol}
-\end{figure}
-
-As a final example, consider the Figure~\ref{fig:petrol} showing the graph of the articles talking
-about the Indian government's decision to raise the fuel price, and its past and subsequent developments. 
-For a user wanting to deeply understand the circumstances behind fuel price hikes in India, the context of 
-all past fuel price hikes is vital. For other users, the political
-sphere and its reactions or the reactions of the petrol retailers may be of more interest.
-
-\subsection{Creating Personalized \& Flexible Contexts}
-Using the graph, the users have access to multiple contexts, each of which, 
-develops a unique aspect of the story, and which
-could highlight and bring forth previously unknown connections among
-actors and topics. In this section, we will take examples to show how
-different users would want/choose to explore same/different contexts
-of the same story they are studying.
-
-Consider two different users, both of whom want to study the Delhi gang-rape story visualized in Figure~\ref{fig:context-adding-graph-gang-rape-1}. However, when presented
-one of the users wishes to study the reactions of politicians in depth, while the other wants to analyze the response and effectiveness of the police
-machinery. Both these users will focus on different contexts, and soon personalize the base graph by filtering on it appropriate to their information
-requirement. As a system, we never took any rigid decision to call only some of the related nodes as the ``most appropriate context''. This allows
-the user to look through multiple other contexts, and then have the flexibility to choose the one that interests them the most. Moreover, this context
-is calculated on the fly subject what part of the graph is in focus at that instant. As the users move across in the graph, the contexts for them keep
-changing, and we can track these contexts efficiently using the graph structure.
-
-Consider Figure~\ref{fig:context-graph-example} where 3 distinct stories are presented. The nodes marked $A$(in blue) cover a case involving Dominique Strauss-Kahn (DSK), 
-those marked $B$(in red) cover of a case surrounding Pascal Mazurier(PM), and those marked $C$(in green) talk of the internationally reported Gang-rape case
-that happened in Delhi(DGR).\footnote{Kindly note that in no way do we want to use this unfortunate incident or others used in the paper in any way except 
-to exemplify the technicalities of our work. As reported in \cite{subasic-icdm:2008}, it is unfortunate that negative incidents are highlighted in the media
-with greater vociferousness.} Two key things can be noted here. Even with a fair overlap of topics (Sexual Assault, Rape), the DSK and DGR subgraphs are not directly linked to each other.
-On the other hand, the PM and DSK stories have a direct link in between them. This points to the fact, that the graph algorithm is successfully able
-to determine how close or far stories (subgraphs) are to each other. Moreover, for any subgraph, one can define the \emph{context-giving node} as 
-a neighbour which when shown to the user, would make it easier for her to understand the story and put in a broader perspective. For eg., if someone
-wants to know about Ram Singh, the prime accused in the DGR case, just looking at the articles featuring Ram Singh won't suffice, since he would be
-discussed in other articles where his name won't have featured explicitly (as he is still on the run). Such context-giving nodes are shown in bold outline in the figure.
-
-Figure~\ref{fig:sample-news-graph} shows an example graph that gets created for a set of 4
-articles covering a crime story. Nodes $A$ and $B$ talk about the incident being reported, reactions from various sections of the society and
-the progress of investigation. Then, there is a fork in the story, with node $C$ talking about the fate of the investigating officer Damayanti Sen, 
-and node $D$ talks covers the judicial probe of the incident. The nodes $C$ and $D$ cover different different aspects of the same story. 
 \begin{figure}
 \caption{A news graph of a crime incident from Bengal}
 \includegraphics[scale=0.36]{figures/graph-1.pdf}
 \label{fig:sample-news-graph}
 \end{figure}
+
+\begin{figure*}
+\caption{A graph snippet showing multiple stories}
+\includegraphics[scale=0.34]{figures/graph-2.pdf}
+\label{fig:context-graph-example}
+\end{figure*}
+
+Figure~\ref{fig:sample-news-graph} shows an example graph that gets created for a set of 4
+articles covering a crime story. Nodes $A$ and $B$ talk about the incident being reported, reactions from various sections of the society and
+the progress of investigation. Then, there is a fork in the story, with node $C$ talking about the fate of the investigating officer Damayanti Sen, 
+and node $D$ talks covers the judicial probe of the incident. The nodes $C$ and $D$ cover different different aspects of the same story. 
+
+Consider Figure~\ref{fig:context-graph-example} where 3 distinct stories are presented. The nodes marked $A$(in blue) cover a case involving Dominique Strauss-Kahn (DSK), 
+those marked $B$(in red) cover of a case surrounding Pascal Mazurier(PM), and those marked $C$(in green) talk of the internationally reported Gang-rape case
+that happened in Delhi(DGR).\footnote{In no way do we want to use this unfortunate incident or others used in the paper in any way except 
+to exemplify the technicalities of our work.} Two key things can be noted here. Even with a fair overlap of topics (Sexual Assault, Rape), the DSK and DGR subgraphs are not directly linked to each other.
+On the other hand, the PM and DSK stories have a direct link in between them. This points to the fact, that the graph generation algorithm is successfully able
+to determine how close or far stories (subgraphs) are to each other.
+
 A key strength of our approach is that we allow the user to iteratively query the underlying corpus on multiple parameters and never have to recreate
 the graph. Having created the graph once, we just filter out only the relevant nodes clusters and visualize them on a timeline as events. 
-On searching for specific actors, we look at the node clusters containing these actors and visualize those clusters. This helps put those actors
-in a broader context. For eg., looking for convicts in a particular crime story, would return not just the story of their judicial probe, but of
-the whole case connected through other actors and topics.
-
