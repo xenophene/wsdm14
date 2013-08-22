@@ -88,7 +88,7 @@ Moreover, it only looks at articles within a time window, and hence different pa
 \subsubsection*{Event detection}
 \label{sec:event-detection-summary-context}
 The news graph created is clustered with a standard graph clustering algorithm: Markov graph clustering \cite{Dongen00a}.
-We used the Edge Weight $r(a,b)$ as defined in \ref{subsec:edge_weight} as the flow (transition probability) from a node $a$ to $b$. The intuition behind using Edge Weight as flow is that it captures the overall similarity between two articles. We normalize $r$ to get the quantity $r_n(a, b) = \frac{r(a, b)}{\sum_{b \in N(a)}r(a, b)}$. We can now formulate the flow matrix using these scores and run the Markov Clustering Algorithm. We used the standard inflation factor of 2 as our input for forming the clusters. 
+We used the Article similarity $r(a,b)$ as defined in \ref{subsec:article_similarity} as the flow (transition probability) from a node $a$ to $b$ by normalizing $r$ to get the quantity $r_n(a, b) = \frac{r(a, b)}{\sum_{b \in N(a)}r(a, b)}$. We can now formulate the flow matrix using these scores and run the Markov Clustering Algorithm. We used the standard inflation factor of 2 as our input for forming the clusters. 
 
 As we show in Section~\ref{sec:baseline-comparison}, events determined by way of clustering on the graph are preferred by users to a similar TfIdf text clustering done on raw articles in most cases.
 

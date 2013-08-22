@@ -54,7 +54,7 @@ Now, we define the following 3 metrics to quantify whether article $b$ should be
 \begin{enumerate}
 \item $coh_a(b)$: Coherence of article $b$ with article $a$
 \item $cont_a(b)$: Context added by article $b$ to article $a$ 
-\item $r(a, b)$: Weight of the edge joining node $a$ and $b$
+\item $r(a, b)$: Overall article similarity between $a$ and $b$
 \end{enumerate}
 
 \subsubsection*{Coherence}
@@ -107,48 +107,46 @@ In table~\ref{tab:different-contexts}, we show the different articles that score
 \label{fig:petrol}
 \end{figure}
 
-\subsubsection*{Edge weights}
-\label{subsec:edge_weight}
-The edge weight $r:\mathcal{A} \times \mathcal{A} \rightarrow [0,1]$ on the news graph $\mathcal{G}$ where $\mathcal{A}$ is the set of all articles is defined as:
+\subsubsection*{Overall article similarity}
+\label{subsec:article_similarity}
+The overall article similarity $r:\mathcal{A} \times \mathcal{A} \rightarrow [0,1]$ between 2 articles where $\mathcal{A}$ is the set of all articles is defined as:
 \begin{equation}
-r(a, b) = sim(a,b) * Jacc(\mathcal{E}(a), \mathcal{E}(b)) * e^{-\alpha(\tau_a - \tau_b)}
+r(a, b) = sim(a,b) * Jacc(\mathcal{E}(a), \mathcal{E}(b)) * e^{-\alpha|\tau_a - \tau_b|}
 \end{equation}
 Here, $sim$ is cosine similarity between articles represented as vectors in the TfIdf space, $Jacc$ is the jaccard similarity between
 the entity sets of articles $a$ and $b$, and the final term is to factor in the time elapsed (in days) between their publishing dates ($\tau_a$ \& $\tau_b$).
-The value of $\alpha$ was kept at 1. Edge weights are taken to capture the overall similarity between the articles.
+The value of $\alpha$ was kept at 1. 
 
-Next, we normalize these metrics between 0 to 1 by dividing with the maximum score that is observed in the window defined by $(\tau - P, \tau + F)$. This
-step is needed so we can compare these scores across different news stories. Our cumulative score is the product of these metrics.
+Next, we normalize each of these metrics to [0, 1] by dividing with the maximum score respective metric that is observed in the window defined by $[\tau - P, \tau + F]$. This
+step is needed so we can compare these scores across different news stories. Our net score to bring out utility of presenting an article $b$ is the product of the 3 metrics.
 
 Our algorithm can now be described as follows: We attempt to get ``most useful'' neighbourhood of $S$. The algorithm is a walk on the news graph starting from articles in $S$, 
-going as far as till we get a preset number of stories to present to the user.
+going as far as till we get the desired number of stories to present to the user. This is similar to a user clicking ``Next'' at the bottom of a search results page to get more results. 
 
 \begin{algorithmic}
   \State \textbf{\underline{GetNeighbourhood}}
   \State \algorithmicrequire{Input article set $S$, MaxStories $\theta$}
   \State \algorithmicensure{Neighbourhood $N$}
-    \State $Q \leftarrow$ Empty\_Priority\_Queue
+    \State $Q \leftarrow$ \{\} \Comment{Empty Priority Queue}
     \ForAll {node $n \in S$}
       \State Enqueue($Q$, ($n, 1$))
     \EndFor
-    \While {Empty($Q$) is {\bf False} and $|N| \leq \theta$}
+    \While {Is\_Empty($Q$) == {\bf False} and $\theta \leq |N|$}
       \State $(v, w)$ = Dequeue($Q$)
-      \If {$w \geq \theta$}
-        \State $N \leftarrow N \cup \{v\}$
-        \ForAll {node $n \in Neighbours(v)$}
-          \State $w_1 \leftarrow coh_{v}(n)$
-          \State $w_2 \leftarrow cont_{S}(n)$
-          \State $w_3 \leftarrow r(v,n)$
-          \State $w_{eff} \leftarrow w_1 * w_2 * w_3 * w$
-          \State Enqueue\_Or\_Update\_Node($Q$, ($n, w_{eff}$))
-        \EndFor
-      \EndIf
+      \State $N \leftarrow N \cup \{v\}$
+      \ForAll {node $n \in Neighbours(v)$}
+        \State $w_1 \leftarrow coh_{v}(n)$
+        \State $w_2 \leftarrow cont_{S}(n)$
+        \State $w_3 \leftarrow r(v,n)$
+        \State $w_{eff} \leftarrow w_1 * w_2 * w_3 * w$
+        \State Enqueue\_Or\_Update\_Node($Q$, ($n, w_{eff}$))
+      \EndFor
     \EndWhile
     \State return $N$
 \end{algorithmic}
 
 Here, $Neighbours$ returns all of a node's neighbours in the graph. $Q$ is an object of priority queue ADT\footnote{Abstract Datatype} which was implemented as a heap. \emph{Enqueue} adds a node according to its weight to the heap. \emph{Enqueue\_Or\_Update\_Node} has the semantics that it updates the weight and position of node $n$ in $Q$ if found, else adds the node to $Q$.
-\emph{Dequeue} returns the node with the highest weight in the heap. We call $GetNeighbourhood(S, \theta)$ where $S$ is the result set of a user's query and $\theta = 30$ for our experiments. The choice of $\theta$ is driven by the front-end interface, and we found 50 to work well.
+\emph{Dequeue} returns the node with the highest weight in the heap. We call $GetNeighbourhood(S, \theta)$ where $S$ is the result set of a user's query and $\theta = 30$ for our experiments. The choice of $\theta$ is driven by the front-end interface, and we found 30 to work well.
 The intuition behind this algorithm is that we want to identify those nodes from the neighbourhood of the result set $S$, which are both coherent and contextual to $S$, and do so in an efficient manner.
 
 \subsection{Some example News Graphs}
@@ -186,7 +184,7 @@ and node $D$ talks covers the judicial probe of the incident. The nodes $C$ and 
 
 Consider Figure~\ref{fig:context-graph-example} where 3 distinct stories are presented. The nodes marked $A$(in blue) cover a case involving Dominique Strauss-Kahn (DSK), 
 those marked $B$(in red) cover of a case surrounding Pascal Mazurier(PM), and those marked $C$(in green) talk of the internationally reported Gang-rape case
-that happened in Delhi(DGR).\footnote{In no way do we want to use this unfortunate incident or others used in the paper in any way except 
+that happened in Delhi(DGR).\footnote{In no way do we want to use this unfortunate incident or others discussed in the paper in any way except 
 to exemplify the technicalities of our work.} Two key things can be noted here. Even with a fair overlap of topics (Sexual Assault, Rape), the DSK and DGR subgraphs are not directly linked to each other.
 On the other hand, the PM and DSK stories have a direct link in between them. This points to the fact, that the graph generation algorithm is successfully able
 to determine how close or far stories (subgraphs) are to each other.

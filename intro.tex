@@ -50,7 +50,7 @@ Police investigations'') and understand the story with that
 context. This results in a view that is personalized for a particular
 user, since she is free to choose the context(s) that help her follow
 the story. We call this notion \emph{Personalized Flexible Context
-  Extraction}. This notion is an extremely natural approach that news
+  Extraction}. This notion is an extremely natural approach that a news
 consumer, whether an expert commentator or a lay person, might want to
 employ as a crucial subtask in the process of news consumption. We
 believe that it is possible to realize this notion given the
@@ -101,21 +101,16 @@ data-structuring approach: We preprocess the data to make news
 browsing and user-led context discovery an easier and computationally
 feasible process.
 
-
 %Contributions
 In summary, our contributions are as follows:
-\begin{itemize}
-\item Building on the work of~\cite{choudhary@ecir2008} we propose a
-  graph-based framework for representing articles in a news corpora
-  and make it query-able. Our framework comes with the advantage that
-  newer articles can simply be added into this representation without
-  requiring us to process the entire corpus.
-\item We provide an interactive interface to users which is easy to
-  use and helps users in tracking the evolution of the story, and zoom
+\squishlist
+\item We build on a graph-based framework (\cite{choudhary@ecir2008}) to represent articles in a news corpus and make it query-able. 
+\item We propose metrics to capture utility of a news article to understand a news story in terms of the coherent context provided by it.
+\item We propose an efficient graph-based algorithm to find useful contexts around a news story that help to get the bigger picture.
+\item We provide an interactive interface to users which is easy to use, and helps in tracking the evolution of the story and zooming
   to specific parts of interest.
-\item We report on the results of a thorough evaluation of our system
-  and show that our system compares well with existing ones.
-\end{itemize}
+\item We report on the results of a thorough evaluation of our system and show that our system compares well with existing ones.
+\squishend
 
 \textbf{Organization:} The rest of the paper is organized as
 follows. We first summarize the related work that has addressed the
