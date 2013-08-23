@@ -131,7 +131,7 @@ going as far as till we get the desired number of stories to present to the user
     \ForAll {node $n \in S$}
       \State Enqueue($Q$, ($n, 1$))
     \EndFor
-    \While {Is\_Empty($Q$) == {\bf False} and $\theta \leq |N|$}
+    \While {Is\_Empty($Q$) == {\bf False} and $|N| \leq \theta$}
       \State $(v, w)$ = Dequeue($Q$)
       \State $N \leftarrow N \cup \{v\}$
       \ForAll {node $n \in Neighbours(v)$}
