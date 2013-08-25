@@ -1,4 +1,20 @@
 \section{ESTHETE: A system for context-full news browsing }
+\label{sec:block}
+\begin{figure}[ht]
+\begin{center}
+\caption{Analytics which help the user better understand the stories}
+\includegraphics[width=9cm,scale=0.30]{figures/faceted2.png}
+\label{fig:faceted-search}
+\end{center}
+\end{figure}
+\begin{figure*}[ht]
+\caption{A screenshot of our tool visualizing Rape-related cases from India in 2012}
+\center{
+    \includegraphics[scale=0.3]{figures/complete.png}
+}
+\label{fig:complete-tool-screenshot}
+\end{figure*}
+
 
 In this section we first describe the key features of our system. Next, we give a block design of our system, followed by a detailed explanation
 of each component. The reader can experiment with the system at {\tt http://konfrap.com/esthete}.
@@ -19,13 +35,7 @@ Our system is a guided environment where a user is presented with popular actors
 news corpus, which guide her search to discover and explore more popular stories first. These also serve to label different stories and guide the
 user towards a more refined query around specific substories. Figure~\ref{fig:faceted-search} shows a snapshot of this feature.
 
-\begin{figure}[ht]
-\begin{center}
-\caption{Analytics which help the user better understand the stories}
-\includegraphics[width=9cm,scale=0.30]{figures/faceted2.png}
-\label{fig:faceted-search}
-\end{center}
-\end{figure}
+
 
 \subsubsection{Structured storage of an article stream}
 The rate at which new articles are published is growing exponentially. If a system
@@ -42,8 +52,6 @@ should be left to the user as a preference.
 We summarize news articles constituting a particular news story to make it easy for a user to the gist of the story. This helps the user to quickly decide whether the story interests her or not.
 
 \subsection{System Overview}
-\label{sec:block}
-
 Figure~\ref{fig:block-system-design} presents our system architecture. It can be divided into
 two major components - Offline and Online. The offline component handles incoming news articles, and augments them into our underlying graph data structure representation stored
 in the database. The online component interfaces with the user, and based on the user's query, identifies the parts of the graph to visualize and 
@@ -69,7 +77,7 @@ We relied on the Hindu articles being hand tagged-at-source by rich and relevant
 \end{figure}
 
 \subsubsection*{News Graph Generation}\label{sec:graph-desc}
-We follow the same graph geenration algorithm described in Choudhary et al.\cite{choudhary@ecir2008}. We extended their algorithm to
+We follow the same graph generation algorithm described in Choudhary et al.\cite{choudhary@ecir2008}. We extended their algorithm to
 augment new articles as they are published on to the graph built up to that time. The following sequence of update steps are to
 be followed on augmenting a new article $a$ published at $\tau$, into the graph structure.
 \begin{enumerate}
@@ -81,7 +89,7 @@ be followed on augmenting a new article $a$ published at $\tau$, into the graph 
   \item Find an edge-covering of the new transformations connecting node $a$ to nodes in $\mathcal{A}[\tau - P, \tau]$
 \end{enumerate}
 
-By taking the recommended values of the parameters($F=50$ days, $P=50$ days), we were able to generate a news graph on 1000 nodes in around 4 minutes on a Dell Intel Centrino machine.
+By taking the recommended values of the parameters($P=50$ days), we were able to generate a news graph on 1000 nodes in around 4 minutes on a Dell Intel Centrino machine.
 Adding newer articles to this graph was significantly cheaper, taking only around 10 seconds depending on the article size, etc.
 Moreover, it only looks at articles within a time window, and hence different parts of the graph can be generated in parallel.
 
@@ -94,13 +102,6 @@ As we show in Section~\ref{sec:baseline-comparison}, events determined by way of
 
 \subsubsection*{Event summarization}
 To make it easier for the user to understand an event, we summarize the articles of this event to give a broad idea of the event and show this summarization alongside the articles capturing that event (Section \ref{sec:filter-summarization}). For this, we tried out various document summarizing tools. We finally decided to Text Compactor \footnote{http://textcompactor.com/} which is based on Open Text Summarizer\footnote{http:/libots.sourceforge.net/} and has a convenient API. 
-\begin{figure*}[ht]
-\caption{A screenshot of our tool visualizing Rape-related cases from India in 2012}
-\center{
-    \includegraphics[scale=0.3]{figures/complete.png}
-}
-\label{fig:complete-tool-screenshot}
-\end{figure*}
 \subsection {Frontend interface}
 Our interface is built on HTML using Javascript and PHP on the server-side, using TimelineJS\footnote{http://timeline.verite.co/} and Google Visualization API\footnote{http://developers.google.com/chart/interactive/docs/reference} libraries.
 Figure~\ref{fig:complete-tool-screenshot} shows a screenshot of our webtool. The interface

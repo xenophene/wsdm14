@@ -76,9 +76,11 @@ the work of~\cite{choudhary@ecir2008} that models news corpora as a
 time-evolving graph by linking related news articles, we provide a
 query mechanism that organizes this structure by topics of interest
 and important actors, and presents the development of a story on a
-timeline. The user can now interact with the result by filtering
-articles based on topic, entities, time, or a combination of all
-three. For example, Figure~\ref{fig:complete-tool-screenshot} shows
+timeline. The user can now interact with the system by filtering
+articles based on topics, actors, time, or a combination of all
+three by iteratively querying on these fields. The process of querying generates different views (subgraphs) of the main news graph back-end, 
+avoiding the need of creating a new graph structure for every query.
+For example, Figure~\ref{fig:complete-tool-screenshot} shows
 the timeline of the recent rape case incidents reported from India.
 
 An important aspect of our work that represents a completely different

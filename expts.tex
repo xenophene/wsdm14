@@ -25,7 +25,7 @@ The three user studies made use of the following setup: an article group, in its
 
 %Each of the experiments made use of different kinds of users. For the first experiment of evaluating the precision of our system, we made use of people who had intimate knowledge of the three stories. For the next two experiments the users ranged from college-going students to expert journalists.
 
-\subsection{Results}
+\subsection{Experiment design and results}
 
 \subsubsection{Usability and Effectiveness}
 \label{subsec:usability}
@@ -42,6 +42,9 @@ S1 & 22 & 3.76 & 4.25 & 4.25 & 3.4 & 4.3 & 3.66\\
 S2 & 12 & 3.83 & 4.18 & 4.29 & 3.5 & 4.39 & 3.71 \\
 S3 & 6 & 3.75 & 4.33 & 4.4 & 3.5 & 4.4 & 3.66\\
 \hline
+\hline
+All & 40 & 3.78 & 4.24 & 4.28 & 3.44 & 4.34 & 3.67\\
+\hline
 \end{tabular}
 \end{center}
 \caption{Average ratings for usability (out of 5); E:ESTHETE, G: Google News}
@@ -49,13 +52,14 @@ S3 & 6 & 3.75 & 4.33 & 4.4 & 3.5 & 4.4 & 3.66\\
 \end{table}
 
 \normalsize
+\subsubsection*{Usability}
 In order to evaluate the usability of ESTHETE, we asked 40 users to pick a story of their choice (among S1, S2 and S3) and to study that story by interacting with ESTHETE and Google News, in any order, for 15 minutes respectively. After the users had interacted with both the systems, we asked users the following questions:
 
-\begin{itemize}
+\squishlist
 	\item {\bf (Q1) Ease of use:} On a scale of 1 to 5, how would you rate both the systems on their ease of use (with 5 corresponding to ``very easy'')?
 	\item {\bf (Q2) New Information:} Given your current knowledge of the story, how would you rate both the systems on their ability to provide new information that you weren't aware of before interacting with the systems? (1 corresponds to ``no new information'', 5 corresponds to ``more than satisfactory'')
 	\item {\bf (Q3) Big Picture:} How would you rate both the systems on their ability to aid your understanding of the big picture of the story? (1 corresponds to ``not at all'', 5 corresponds to ``perfectly well'')
-\end{itemize}
+\squishend
 
 The results are tabulated in Table \ref{tab:ease}.
 Clearly, the users found our system to be more effective than Google News in gaining new information and understanding the bigger picture of the story, in a short time frame. This shows the ability of our system ESTHETE to bring forth and coherently link important nuggets of information. This also exhibits our system's ability to present the user with the necessary context that aided their understanding of the bigger picture of the story. The users also found the system easy to use and navigate.
@@ -78,8 +82,9 @@ S2 & {\em Did you learn about the reactions of AIDMK and DMK to the petrol price
 \caption{Yes-No questions asked to compare ESTHETE with Google News}
 \label{tab:domain-yes-no-questions}
 \end{table}
+\subsubsection*{Effectiveness}
 We also compared the effectiveness of our system, to help users understand a story in depth, with Google News. We asked 18 users to use either our system or Google News in order to understand any of the three stories listed above. The users had to pick one story of their interest and were allowed to interact with their chosen system for a session lasting 25 minutes. The user's task was to learn as much as they can about their chosen story using a system. Then, once they had completed their
-interaction with their chosen system (ESTHETE or Google News), they were asked to answer a series of very specific questions related to the story they studied. Some of these questions are shown in table~\ref{tab:domain-yes-no-questions}. For these questions, the users had to answer a Yes or a No based on their perception of how easy or difficult they feel it is to answer these questions using the system they just used. The users replied Yes if they felt that they could answer the question using the system they just used and vice versa.
+interaction with their chosen system (ESTHETE or Google News), they were asked to answer a series of very specific questions related to the story they studied. Some of these questions are shown in Table~\ref{tab:domain-yes-no-questions}. For these questions, the users had to answer a Yes or a No based on their perception of how easy or difficult they feel it is to answer these questions using the system they just used. The users replied Yes if they felt that they could answer the question using the system they just used and vice versa.
 
 \begin{table}
 \small
@@ -101,9 +106,7 @@ S3 & 6 & 3 & 0 & 3 & 0 \\
 \normalsize
 The results are tabulated in Table \ref{tab:effectiveness}. The table entries shows for a particular story, the number of responses for which the users responded that they can answer the underlying question using only ESTHETE, only Google News, from both and from none of these systems. The results shows that users found it easier to answer the story-related questions using our system, in comparision to Google News. This clearly demonstrates that our system is more effective than Google News in aiding the users get enough information for answering the story-specific questions. This study brings out the ability of our system to improve the user's understanding of the underlying story.  
 
-
 \subsubsection{Precision of the system}
-
 \begin{table}
 \begin{center}
 \small
