@@ -1,5 +1,8 @@
 \section{ESTHETE: A system for context-full news browsing }
 \label{sec:block}
+
+In this section we first describe the key features of our system. Next, we give a block design of our system, followed by a detailed explanation
+of each component. Finally, we describe the front-end design components. The reader can experiment with the system at {\tt http://konfrap.com/esthete}.
 \begin{figure}[ht]
 \begin{center}
 \caption{Analytics which help the user better understand the stories}
@@ -7,17 +10,6 @@
 \label{fig:faceted-search}
 \end{center}
 \end{figure}
-\begin{figure*}[ht]
-\caption{A screenshot of our tool visualizing Rape-related cases from India in 2012}
-\center{
-    \includegraphics[scale=0.3]{figures/complete.png}
-}
-\label{fig:complete-tool-screenshot}
-\end{figure*}
-
-
-In this section we first describe the key features of our system. Next, we give a block design of our system, followed by a detailed explanation
-of each component. The reader can experiment with the system at {\tt http://konfrap.com/esthete}.
 
 \subsection{Key features of ESTHETE}
 \subsubsection{Queryability}
@@ -34,8 +26,6 @@ We are able to find these articles given the user's filter query (which generate
 Our system is a guided environment where a user is presented with popular actors, topics, events, time periods, etc automatically from the 
 news corpus, which guide her search to discover and explore more popular stories first. These also serve to label different stories and guide the
 user towards a more refined query around specific substories. Figure~\ref{fig:faceted-search} shows a snapshot of this feature.
-
-
 
 \subsubsection{Structured storage of an article stream}
 The rate at which new articles are published is growing exponentially. If a system
@@ -71,7 +61,7 @@ we used an ontology(YAGO\footnote{http://www.mpi-inf.mpg.de/yago-naga/yago/}) ba
 Along with the entities for an article, we also need the list of topics that were talked about in the article. 
 We relied on the Hindu articles being hand tagged-at-source by rich and relevant Topic tags. These are much more expressive compared to an automated technique of topic detection.
 \begin{figure}
-\caption{System diagram of our News Browsing system}
+\caption{System design of Esthete}
 \includegraphics[scale=0.24]{figures/system-design.pdf}
 \label{fig:block-system-design}
 \end{figure}
@@ -101,7 +91,7 @@ We used the Article similarity $r(a,b)$ as defined in \ref{subsec:article_simila
 As we show in Section~\ref{sec:baseline-comparison}, events determined by way of clustering on the graph are preferred by users to a similar k-means text clustering done on raw articles in most cases.
 
 \subsubsection*{Event summarization}
-To make it easier for the user to understand an event, we summarize the articles of this event to give a broad idea of the event and show this summarization alongside the articles capturing that event (Section \ref{sec:filter-summarization}). For this, we tried out various document summarizing tools. We finally decided to Text Compactor \footnote{http://textcompactor.com/} which is based on Open Text Summarizer\footnote{http:/libots.sourceforge.net/} and has a convenient API. 
+To make it easier for the user to understand an event, we summarize the articles of this event to give a broad idea of the event and show this summarization alongside the articles capturing that event (Section \ref{sec:filter-summarization}). For this, we tried out various document summarizing tools. We finally decided to use Text Compactor \footnote{http://textcompactor.com/} which is based on Open Text Summarizer\footnote{http:/libots.sourceforge.net/} and has a convenient API. 
 \subsection {Frontend interface}
 Our interface is built on HTML using Javascript and PHP on the server-side, using TimelineJS\footnote{http://timeline.verite.co/} and Google Visualization API\footnote{http://developers.google.com/chart/interactive/docs/reference} libraries.
 Figure~\ref{fig:complete-tool-screenshot} shows a screenshot of our webtool. The interface

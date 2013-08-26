@@ -10,8 +10,9 @@
 % interface.
 %\end{quote}
 In this section, we first define a notion of contextuality in a news browsing system, and motivate the need for the system to serve multiple flexible and personalizable contexts to a user as per her
-requirements and/or preferences. We reason why we think this is a necessary feature of a news browsing system. Next, we show how rich contexts can be served to a user on the fly based on her intent
-from the graph structure created from the input news corpus, taking specific examples. 
+requirements and/or preferences. Next, we propose a graph algorithm based on 3 metrics to mine
+useful articles that help in understanding (``put in context'') a story\footnote{story, set of articles and news subgraph are used interchangeably} $S$. These rich contexts can be served to a user on the fly based on her intent 
+from the graph structure . We then take specific examples of the created contexts in different scenarios.
 
 \subsection{Formal definition of Context}
 Let us attempt to define clearly what we mean by context. 
@@ -21,9 +22,8 @@ Let us attempt to define clearly what we mean by context.
 %vague and does not help us. So, instead, viewing the news corpus as a
 %time indexed set, we can think of the following definition: 
 \begin{quote}
-Given a news article or articles (from here on, referred to as our result set $S$), {\em context} is that set of stories
-preceding, co-occuring or following that article or articles which
-enhance our understanding of the events or ideas described in that article or articles.
+Given a news article or articles (from here on, referred to as our result set $S$), {\em context} is that set of articles
+preceding, co-occuring or following the set $S$ which enhance our understanding of the events or ideas described in $S$.
 \end{quote}
 
 Context for a user using our system, comprises of all the additional articles, topics,
@@ -46,6 +46,11 @@ We first define the notion of strength $\Omega$ (that is used in 2 of the metric
 \Omega(\lambda, \tau) = \frac{\sum_{a \in \mathcal{A}[\tau - P, \tau + F]}{\mathbb{1}(\lambda \in \mathcal{E}(a))}}{|\mathcal{A}[\tau - P, \tau + F]|}
 \end{equation}
 $P$ and $F$ are past and future time windows that we keep at 50 days each, and $\mathcal{A}[\tau - P, \tau + F]$ is the set of all articles published in this time window. $\mathcal{E}(a)$ is the set of all entities featuring in article $a$.
+\begin{figure}
+\caption{The fuel price hike story (September 2012) and its contexts}
+\includegraphics[scale=0.30]{figures/graph-petrol.pdf}
+\label{fig:petrol}
+\end{figure}
 
 Now, we define the following 3 metrics.
 \begin{enumerate}
@@ -53,7 +58,6 @@ Now, we define the following 3 metrics.
 \item $cont_a(b)$: Context added by article $b$ to article $a$ 
 \item $r(a, b)$: Overall article similarity between $a$ and $b$
 \end{enumerate}
-
 \subsubsection*{Coherence}
 Given an article $a$, we define $coh_{a}(b)$ as the \emph{coherence} between $a$ and some other article $b$. Intuitively, coherence captures the continuity of the story when the two articles are read in succession.
 Clearly, coherence between 2 articles depends on the amount of their entity overlap. Moreover, common entities with high strength should contribute less to coherence. This idea is similar in spirit to that of ``Inverse document frequency'' in Tf-Idf. Words (entities) common across many documents (articles) are less characteristic in describing a particular document (story). 
@@ -81,7 +85,7 @@ cont_{A}(b) = \frac{\sum_{\lambda \in \mathcal{E}(b)}{\Omega(\lambda, \tau_b)*(\
 where $\tau_b$ is the time at which $b$ is published, $\frac{\sum_{a \in A}\mathbb{1}(\lambda \in \mathcal{E}(a))}{|A|}$ captures the strength of entity $\lambda$ in set $A$ and $k \in [0, 1]$ is the parameter which influences which of the 2 kinds of context is more prominent. A lower $k$ dampens the weight given to the strength of common entities between $A$ and $b$, and hence favours context 
 around the popular entities (high $\Omega$). Conversely, a higher $k$ forces articles having a good overlap of occuring entities with set $A$ to result in a higher context score.
 In table~\ref{tab:different-contexts}, we show the different articles that score high on context on 3 different values of $k$. The base story $A$ ({\em North Koreans mourn Kim}\footnote{http://www.thehindu.com/news/international/north-koreans-mourn-kim/article4206294.ece}) is an article from 2012 about the late Kim Jong-il\footnote{http://en.wikipedia.org/wiki/Kim\_Jong-il}. 
-For $k=1$, the context-adding articles closely belong to the topics around the death of the leader. The other extreme ($k=0$) helps discover broader stories of the fallout of the leader's death, for example on the economy, foreign policy, etc.
+For $k=1$, the context-adding articles closely follow the death of the leader. The other extreme ($k=0$) helps a user discover broader stories of its influence on the economy, foreign policy, etc.
 
 \begin{table}
 \small
@@ -99,11 +103,7 @@ For $k=1$, the context-adding articles closely belong to the topics around the d
 \caption{Context-adding articles for different $k$}
 \label{tab:different-contexts}
 \end{table}
-\begin{figure}
-\caption{The fuel price hike story (September 2012) and its contexts}
-\includegraphics[scale=0.30]{figures/graph-petrol.pdf}
-\label{fig:petrol}
-\end{figure}
+
 
 \subsubsection*{Overall article similarity}
 \label{subsec:article_similarity}
@@ -113,10 +113,10 @@ r(a, b) = sim(a,b) * Jacc(\mathcal{E}(a), \mathcal{E}(b)) * e^{-\alpha|\tau_a - 
 \end{equation}
 Here, $sim$ is cosine similarity between articles represented as vectors in the TfIdf space, $Jacc$ is the jaccard similarity between
 the entity sets of articles $a$ and $b$, and the final term is to factor in the time elapsed (in days) between their publishing dates ($\tau_a$ \& $\tau_b$).
-The value of $\alpha$ was kept at 1. This score is pre-computed for each pair of articles. 
+The value of $\alpha$ was kept at 1. This score is pre-computed for each pair of articles joined by an edge. 
 
 Next, we normalize each of these metrics to [0, 1] by dividing with the maximum score respective metric that is observed in the window defined by $[\tau - P, \tau + F]$. This
-step is needed so we can compare these scores across different news stories. Our net score to bring out utility of presenting an article $b$ is the product of the 3 metrics.
+step is needed so we can compare these scores across different news stories. Our net score to capture utility of presenting an article $b$ to the user is the product of the 3 metrics.
 \subsection{Context-extraction algorithm}
 The setting is as follows: A user issues a certain filter query (like ``{\bf Corruption} AND {\bf Manmohan Singh}''). The result article set $S$ is computed by applying this filter on the news graph backend. Now, we want to identify articles
 related to $S$ via a path in the graph, which would be helpful to the user to understand the story and the bigger picture.
@@ -124,7 +124,7 @@ Our algorithm can now be described as follows: We attempt to get ``most useful''
 going as far as till we get the desired number of stories to present to the user. This is similar to a user clicking ``Next'' at the bottom of a search results page to get more results. 
 
 \begin{algorithmic}
-  \State \textbf{\underline{GetNeighbourhood}}
+  \State \textbf{\underline{MineContextfullNeighbourhood}}
   \State \algorithmicrequire{Input article set $S$, MaxStories $\theta$}
   \State \algorithmicensure{Neighbourhood $N$}
     \State $Q \leftarrow$ \{\} \Comment{Empty Priority Queue}
@@ -146,39 +146,38 @@ going as far as till we get the desired number of stories to present to the user
 \end{algorithmic}
 
 Here, $Neighbours$ returns all of a node's neighbours in the graph. $Q$ is an object of priority queue ADT\footnote{Abstract Datatype} which was implemented as a heap. \emph{Enqueue} adds a node according to its weight to the heap. \emph{Enqueue\_Or\_Update\_Node} has the semantics that it updates the weight and position of node $n$ in $Q$ if found, else adds the node to $Q$.
-\emph{Dequeue} returns the node with the highest weight in the heap. We call $GetNeighbourhood(S, \theta)$ where $S$ is the result set of a user's query and $\theta = 30$ for our experiments. The choice of $\theta$ is driven by the front-end interface, and we found 30 to work well.
-The intuition behind this algorithm is that we want to identify those nodes from the neighbourhood of the result set $S$, which are both coherent and contextual to $S$, and do so in an efficient manner (variant of BFS on the graph).
+\emph{Dequeue} returns the node with the highest weight in the heap. We call $MineContextfullNeighbourhood(S, \theta)$ where $S$ is the result set of a user's query and $\theta = 30$ for our experiments. The choice of $\theta$ is driven by the front-end interface, and we found 30 to work well.
+The intuition behind this algorithm is that we want to identify those nodes from the neighbourhood of the result set $S$, which are both coherent and contextual to $S$, and do so in an efficient manner (variant of BFS).
 
 \subsection{Some examples of context extracted}
-In this section, we present sample news graphs generated on various stories and show how context is useful for each of them.
+In this section, we present some examples of context that are extracted by the Context-extraction algorithm on various stories and show how context is useful for each of them.
 
 \begin{figure}
 \caption{Robert Vadra corruption story and its contexts}
 \includegraphics[scale=0.30]{figures/graph-vadra.pdf}
 \label{fig:vadra-corruption}
 \end{figure}
-
+\begin{figure*}[ht]
+\caption{A graph snippet showing multiple stories}
+\includegraphics[scale=0.34]{figures/graph-2.pdf}
+\label{fig:context-graph-example}
+\end{figure*}
 Consider Figure~\ref{fig:vadra-corruption} showing the graph of the story around Robert Vadra's alleged
 corruption scandal reported in the news. As the story progresses in time, the articles
 start to assume that the reader has enough knowledge of who Robert Vadra is, what is he known for,
 how has this controversy spiralled to include the top political parties of India, etc. Hence, these articles
 become increasingly inaccessible to a user with less prior context. However, 
-using the graph, we can provide this context at any stage. Moreover, while following the story, 
-the reader can look for how have the political parties reacted to this story as another context.
-\begin{figure*}
-\caption{A graph snippet showing multiple stories}
-\includegraphics[scale=0.34]{figures/graph-2.pdf}
-\label{fig:context-graph-example}
-\end{figure*}
+by mining and showing these different contexts (blue and yellow nodes of the Figure), we make the story more accessible to any user. 
 
- 
+
 
 Consider Figure~\ref{fig:context-graph-example} where 3 distinct stories are presented. The nodes marked $A$(in blue) cover a case involving Dominique Strauss-Kahn (DSK), 
-those marked $B$(in red) cover of a case surrounding Pascal Mazurier(PM), and those marked $C$(in green) talk of the internationally reported Gang-rape case
+those marked $B$(in red) cover a case surrounding Pascal Mazurier(PM), and those marked $C$(in green) talk of the internationally reported Gang-rape case
 that happened in Delhi(DGR).\footnote{In no way do we want to use this unfortunate incident or others discussed in the paper in any way except 
-to exemplify the technicalities of our work.} Two key things can be noted here. Even with a fair overlap of topics (Sexual Assault, Rape), the DSK and DGR subgraphs are not directly linked to each other.
-On the other hand, the PM and DSK stories have a direct link in between them. This points to the fact, that the graph generation algorithm is successfully able
-to determine how close or far stories (subgraphs) are to each other.
+to exemplify the technicalities of our work.} Story $A$ gives the context of ``other cases involving high profile international diplomats'' to $B$. 
+On the other hand, neither story $A$ nor $B$ would be a useful context to story $C$. This is because the circumstances of story $C$ are quite different, and
+other more relevant contexts (see Figure~\ref{fig:context-adding-graph-gang-rape-1}) are available.
+This also shows that the graph generation algorithm is successfully able to determine how close or far stories are to each other.
 
-A key strength of our approach is that we allow the user to iteratively query the underlying corpus on multiple parameters and never have to recreate
-the graph. Having created the graph once, we just filter out only the relevant nodes clusters and visualize them on a timeline as events. 
+A key strength of our approach is that we allow the user to iteratively query the underlying corpus on multiple parameters discovering different contexts without the need to recreate the
+underlying graph. Having created the graph once, we just filter out only the relevant stories and their contexts.

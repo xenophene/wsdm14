@@ -3,13 +3,13 @@
 
 Our works builds upon several areas of research, in particular the graphical representation of news articles, the identification and tracking of topics, time-based story and event evolution, multi document summarization, and information visualisation.
 
-\paragraph*{Graph representation of Articles} Choudhary et al.\cite{choudhary@ecir2008} proposed (which was at that time) a novel method of organizing a news corpus into a directed graph, by mining and tracking the \emph{transformations} that the \emph{actors} in the corpus undergo. These transformations, defined for one or two actors, can be one of the following:
+\paragraph*{Graph representation of Articles} Choudhary et al.\cite{choudhary@ecir2008} proposed (which was at that time) a novel method of organizing a news corpus into a directed graph, by mining and tracking the \emph{transformations} that the entities in the corpus undergo. These transformations, defined for one or more entities, can be one of the following:
 \squishlist
-  \item \textbf{Birth:} An actor appearing for the first time
-  \item \textbf{Cease:} An actor appearing for the last time
-  \item \textbf{Merge:} Two actors interacting for the first time
-  \item \textbf{Split:} Two actors interacting for the last time
-  \item \textbf{Continue:} An actor remaining popular in a period
+  \item \textbf{Birth:} An entity appearing for the first time
+  \item \textbf{Cease:} An entity appearing for the last time
+  \item \textbf{Merge:} Two entities co-occurring for the first time
+  \item \textbf{Split:} Two entities co-occurring for the last time
+  \item \textbf{Continue:} An entity remaining popular in a period
 \squishend
 Their idea can be summarized as follows: 1) Mine transformations in the article set 2) Find a weighted-edge covering of all transformations.
 For a more detailed description, we refer the reader to the paper. The work does not discuss how such a news graph may be mined to extract
@@ -35,4 +35,4 @@ and node $D$ talks covers the judicial probe of the incident. The nodes $C$ and 
 
 \paragraph*{Visualization} Vydiswaran et al.\cite{MEET:MEET14504801078} design a system to explore news by querying for topics, time range and locations. However, they process articles per user query. In addition, there is no notion of tracking news evolution on a timeline.
 
-As far as we know, our work is the first attempt towards using a rich graph structure built out of the raw articles, that is amenable to repetitive querying without any significant cost of post-processing. Having such a structure, allows us to run efficient algorithms on the news article stream to mine and track the underlying news stories and to provide a personalised context to the story tailored to the user's query. Further, by visualizing these stories on a timeline, helps the user follow the progression of the story through the different actors and topics.
+As far as we know, our work is the first attempt towards using a rich graph structure built out of the raw articles, that is amenable to repetitive querying without any significant cost of post-processing. Having such a structure, allows us to run efficient algorithms on the news article stream to mine and track the underlying news stories and to provide a personalised context to the story tailored to the user's query. Further, by visualizing these stories on a timeline, it helps the user follow the progression of the story through the different actors and topics.

@@ -19,7 +19,7 @@ development of the story with its various aspects is not much easier
 than it was in the days of paper-based news media. The news corpus is
 available in electronic form, carefully archived by all news
 organizations. There have been some recent efforts by the research
-community that attempt to extract individual strands of a stories
+community that attempt to extract individual strands of a story's
 development from the corpus~\cite{shahaf@kdd2010} or present
 interacting strands in a mesh-like
 structure~\cite{shahaf@www2012}. Still others use graph-like
@@ -30,6 +30,11 @@ is the structural framework required to process it into a form that
 would make it possible for a user to elaborate the many contexts
 behind a single news story, some stretching years into the past, some
 just a few days. 
+\begin{figure}[ht]
+\caption{How multiple contexts are added to a single story}
+\includegraphics[scale=0.31]{figures/graph-3.pdf}
+\label{fig:context-adding-graph-gang-rape-1}
+\end{figure}
 
 To make this concrete let us consider the unfortunate gang-rape
 incident that took place in Delhi in December 2012. Since the day this
@@ -40,39 +45,40 @@ organizations, etc), the health of the victim up to her tragic death,
 the investigation carried out by the law enforcement authorities and
 the judicial proceedings against the offenders once they were
 caught. Different users may want to focus on different aspects of this
-story. For eg., consider a graph of news articles around this story
+story. For eg., consider a graph snippet of news articles around this story
 shown in Figure~\ref{fig:context-adding-graph-gang-rape-1}.  We see
 three of the many possible contexts that can be followed and utilized
 by a user to better understand the overall picture. We allow the user
 to express her intent to follow a particular context (either ``the
 reactions of Politicians'' or ``the victim's condition'' or ``the
 Police investigations'') and understand the story with that
-context. This results in a view that is personalized for a particular
+context. This results in a view that is personalized for that particular
 user, since she is free to choose the context(s) that help her follow
 the story. We call this notion \emph{Personalized Flexible Context
   Extraction}. This notion is an extremely natural approach that a news
 consumer, whether an expert commentator or a lay person, might want to
 employ as a crucial subtask in the process of news consumption. We
 believe that it is possible to realize this notion given the
-development in information extraction techniques that has taken place
+developments in information extraction techniques that have taken place
 in the last few years. However this realization requires the
 specification and implementation of a  framework for
 (pre)processing and structuring the news corpus in such a way that it
 can easily serve information needs that cannot always be forseen when
 the news emerges.
-
-\begin{figure}[ht]
-\caption{How multiple contexts are added to a single story}
-\includegraphics[scale=0.31]{figures/graph-3.pdf}
-\label{fig:context-adding-graph-gang-rape-1}
-\end{figure}
+\begin{figure*}[ht]
+\caption{A screenshot of our tool visualizing Rape-related cases from India in 2012}
+\center{
+    \includegraphics[scale=0.3]{figures/complete.png}
+}
+\label{fig:complete-tool-screenshot}
+\end{figure*}
 
 
 %What we want to do about it -- this paragraph is pretty weak
 Our attempt in this paper is to provide such a framework and show that
-it can be used in a flexible way by a user to fulfill his or her need
-to contextualize what he or she is reading in the news.  Building on
-the work of~\cite{choudhary@ecir2008} that models news corpora as a
+it can be used in a flexible way by a user to fulfill her need
+to contextualize what she is reading.  Building on
+the work of Choudhary et al.~\cite{choudhary@ecir2008} that models news corpora as a
 time-evolving graph by linking related news articles, we provide a
 query mechanism that organizes this structure by topics of interest
 and important actors, and presents the development of a story on a
@@ -81,7 +87,7 @@ articles based on topics, actors, time, or a combination of all
 three by iteratively querying on these fields. The process of querying generates different views (subgraphs) of the main news graph back-end, 
 avoiding the need of creating a new graph structure for every query.
 For example, Figure~\ref{fig:complete-tool-screenshot} shows
-the timeline of the recent rape case incidents reported from India.
+the timeline of the 2012 rape case incidents from India.
 
 An important aspect of our work that represents a completely different
 approach from the prominent attempts at news corpus processing and
@@ -117,8 +123,8 @@ In summary, our contributions are as follows:
 \textbf{Organization:} The rest of the paper is organized as
 follows. We first summarize the related work that has addressed the
 problem of news corpus mining, categorizing it under various threads
-(Section~\ref{sec:related}). We then formally state our definition of
-a context and propose an efficient algorithm to mine context-adding articles (Section~\ref{sec:newsgraph}).  In
+(Section~\ref{sec:related}). In particular, we recap the graph generation algorithm of Choudhary et al.\cite{choudhary@ecir2008}. We then formally state our definition of
+context and propose an efficient algorithm to mine context-adding articles to a set of articles (Section~\ref{sec:newsgraph}).
 Next, we present ESTHETE, our news browsing system, describe its features and give its detailed block-by-block component description
 (Section~\ref{sec:block}). We then present results from various
 evaluation experiments conducted on our news browsing system
